@@ -1,3 +1,4 @@
+using System;
 using UnityEngine;
 
 public class UnidadFactory : MonoBehaviour
@@ -37,5 +38,10 @@ public class UnidadFactory : MonoBehaviour
         }
 
         Instantiate(prefab, posicion, Quaternion.identity);
+    }
+
+    internal void ProducirUnidad(UnidadType tipo, Vector3 position)
+    {
+        throw new NotImplementedException();
     }
 }

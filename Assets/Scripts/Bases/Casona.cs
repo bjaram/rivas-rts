@@ -54,12 +54,17 @@ public class Casona : MonoBehaviour, IBase
             Debug.Log("¡La Casona ha sido destruida!");
         }
     }
-
+    //Crear las unidades básicas de tipo Peon
     public void ProducirUnidad(UnidadType tipo)
     {
-        if (estado != EstadoBase.Activa) return;
-
-        UnidadFactory.Instance.EntrenarUnidad(tipo, transform.position);
+        if (tipo == UnidadType.Peon)
+        {
+            UnidadFactory.Instance.ProducirUnidad(tipo, transform.position);
+        }
+        else
+        {
+            Debug.LogWarning("La Casona solo puede crear unidades tipo Peon.");
+        }
     }
 
     public EstadoBase ObtenerEstado()
