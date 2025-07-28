@@ -4,6 +4,7 @@ public class Campesino : MonoBehaviour, IUnidad
 {
     private int vida = 100;
     private float velocidad = 75f;
+    private int vidaMaxima;
 
     public void Mover(Vector3 destino)
     {
@@ -22,4 +23,11 @@ public class Campesino : MonoBehaviour, IUnidad
     }
 
     public int ObtenerVida() => vida;
+
+    public void RecibirCuracion(int cantidad)
+    {
+        vida += cantidad;
+        if (vida > vidaMaxima)
+            vida = vidaMaxima;
+    }
 }

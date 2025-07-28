@@ -1,10 +1,11 @@
-using System;
+﻿using System;
 using UnityEngine;
 
 public class UnidadFactory : MonoBehaviour
 {
     public static UnidadFactory Instance { get; private set; }
 
+    public GameObject peonPrefab;
     public GameObject campesinoPrefab;
     public GameObject esperancitaPrefab;
     public GameObject morenitoPrefab;
@@ -20,10 +21,11 @@ public class UnidadFactory : MonoBehaviour
         Instance = this;
     }
 
-    public void EntrenarUnidad(UnidadType tipo, Vector3 posicion)
+    public IUnidad CrearUnidad(UnidadType tipo, Vector3 posicion)
     {
         GameObject prefab = tipo switch
         {
+            UnidadType.Peon => peonPrefab,
             UnidadType.Campesino => campesinoPrefab,
             UnidadType.Esperancita => esperancitaPrefab,
             UnidadType.Morenito => morenitoPrefab,
@@ -33,15 +35,19 @@ public class UnidadFactory : MonoBehaviour
 
         if (prefab == null)
         {
-            Debug.LogError("Prefab no asignado para el tipo de unidad: " + tipo);
-            return;
+            Debug.LogError($"❌ Prefab no asignado para la unidad: {tipo}");
+            return null;
         }
 
-        Instantiate(prefab, posicion, Quaternion.identity);
-    }
+        GameObject unidadGO = Instantiate(prefab, posicion, Quaternion.identity);
 
-    internal void ProducirUnidad(UnidadType tipo, Vector3 position)
-    {
-        throw new NotImplementedException();
+        if (!unidadGO.TryGetComponent(out IUnidad unidad))
+        {
+            Debug.LogError($"❌ El prefab {prefab.name} no implementa IUnidadBase.");
+            Destroy(unidadGO);
+            return null;
+        }
+
+        return unidad;
     }
 }

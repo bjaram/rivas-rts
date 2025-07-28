@@ -1,9 +1,10 @@
 using UnityEngine;
 
-public class Esperancita : MonoBehaviour, IUnidad
+public class Esperancita : MonoBehaviour, IUnidad, IMovible, IDaniable, IAtacante
 {
     private int vida = 50;
     private float velocidad = 100f;
+    private int vidaMaxima;
 
     public void Mover(Vector3 destino)
     {
@@ -22,4 +23,11 @@ public class Esperancita : MonoBehaviour, IUnidad
     }
 
     public int ObtenerVida() => vida;
+
+    public void RecibirCuracion(int cantidad)
+    {
+        vida += cantidad;
+        if (vida > vidaMaxima)
+            vida = vidaMaxima;
+    }
 }

@@ -1,9 +1,11 @@
 using UnityEngine;
 
-public class Morenito : MonoBehaviour, IUnidad
+public class Morenito : MonoBehaviour, IUnidad, IMovible, IDaniable, IAtacante
+
 {
     private int vida = 200;
     private float velocidad = 150f;
+    private int vidaMaxima;
 
     public void Mover(Vector3 destino)
     {
@@ -22,4 +24,11 @@ public class Morenito : MonoBehaviour, IUnidad
     }
 
     public int ObtenerVida() => vida;
+
+    public void RecibirCuracion(int cantidad)
+    {
+        vida += cantidad;
+        if (vida > vidaMaxima)
+            vida = vidaMaxima;
+    }
 }

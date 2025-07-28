@@ -59,7 +59,7 @@ public class Casona : MonoBehaviour, IBase
     {
         if (tipo == UnidadType.Peon)
         {
-            UnidadFactory.Instance.ProducirUnidad(tipo, transform.position);
+            UnidadFactory.Instance.CrearUnidad(tipo, transform.position);
         }
         else
         {
