@@ -6,14 +6,16 @@ public class Esperancita : MonoBehaviour, IUnidad, IMovible, IDaniable, IAtacant
     private float velocidad = 100f;
     private int vidaMaxima;
 
+    private IComportamientoAtaque comportamientoAtaque;
+
+    private void Start()
+    {
+        comportamientoAtaque = new AtaqueChancleta(); 
+    }
+
     public void Mover(Vector3 destino)
     {
         transform.position = Vector3.MoveTowards(transform.position, destino, velocidad * Time.deltaTime);
-    }
-
-    public void Atacar(GameObject objetivo)
-    {
-        // Lógica de ataque a distancia (lanzar chancleta)
     }
 
     public void RecibirDanio(int cantidad)
@@ -24,6 +26,15 @@ public class Esperancita : MonoBehaviour, IUnidad, IMovible, IDaniable, IAtacant
 
     public int ObtenerVida() => vida;
 
+    public void Atacar(GameObject objetivo)
+    {
+        comportamientoAtaque.Atacar(objetivo);
+    }
+
+    public void EstablecerComportamiento(IComportamientoAtaque nuevoComportamiento)
+    {
+        comportamientoAtaque = nuevoComportamiento;
+    }
     public void RecibirCuracion(int cantidad)
     {
         vida += cantidad;

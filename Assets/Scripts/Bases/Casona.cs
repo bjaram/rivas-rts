@@ -1,4 +1,3 @@
-using System.Resources;
 using UnityEngine;
 using System.Collections;
 
@@ -10,6 +9,7 @@ public class Casona : MonoBehaviour, IBase
     [SerializeField] private float tiempoConstruccion = 5f;
 
     private EstadoBase estado = EstadoBase.EnConstruccion;
+    private IEstadoBase estadoActual;
 
     private void Start()
     {
@@ -25,7 +25,7 @@ public class Casona : MonoBehaviour, IBase
             return;
         }
 
-        // Simular construcción con espera
+        CambiarEstado(new EstadoEnConstruccion());
         StartCoroutine(ConstruccionProgresiva());
     }
 
@@ -35,40 +35,45 @@ public class Casona : MonoBehaviour, IBase
         while (tiempo < tiempoConstruccion)
         {
             tiempo += Time.deltaTime;
-            // Aquí puedes actualizar una barra de progreso
             yield return null;
         }
 
+        CambiarEstado(new EstadoActiva());
         estado = EstadoBase.Activa;
         Debug.Log("Casona construida y activa.");
     }
 
     public void RecibirDanio(int cantidad)
     {
-        saludActual -= cantidad;
-        if (saludActual <= 0)
+        estadoActual?.RecibirDanio(this, cantidad);
+    }
+
+    public void ModificarSalud(int delta)
+    {
+        saludActual += delta;
+        saludActual = Mathf.Clamp(saludActual, 0, saludMaxima);
+
+        if (saludActual <= 0 && !(estadoActual is EstadoDestruida))
         {
-            saludActual = 0;
+            CambiarEstado(new EstadoDestruida());
             estado = EstadoBase.Destruida;
-            // Trigger visual y sonido
             Debug.Log("¡La Casona ha sido destruida!");
         }
     }
-    //Crear las unidades básicas de tipo Peon
+
     public void ProducirUnidad(UnidadType tipo)
     {
-        if (tipo == UnidadType.Peon)
-        {
-            UnidadFactory.Instance.CrearUnidad(tipo, transform.position);
-        }
-        else
-        {
-            Debug.LogWarning("La Casona solo puede crear unidades tipo Peon.");
-        }
+        estadoActual?.ProducirUnidad(this, tipo);
     }
 
     public EstadoBase ObtenerEstado()
     {
         return estado;
+    }
+
+    public void CambiarEstado(IEstadoBase nuevoEstado)
+    {
+        estadoActual = nuevoEstado;
+        estadoActual.Ejecutar(this);
     }
 }
