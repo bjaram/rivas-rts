@@ -125,6 +125,7 @@ GameObject:
   - component: {fileID: 4245308750493827600}
   - component: {fileID: 4911483879499009187}
   - component: {fileID: 2158432710020497649}
+  - component: {fileID: -4785922698411219350}
   m_Layer: 6
   m_Name: Peon1
   m_TagString: Untagged
@@ -271,5 +272,17 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 7104bb59bb37b8041b635c04f7e4de0b, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+--- !u!114 &-4785922698411219350
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6470141303816932477}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 518ffcebf61b5334483c834b2c6248ff, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 

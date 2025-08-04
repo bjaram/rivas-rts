@@ -19,6 +19,8 @@ public class ResourceManager : MonoBehaviour
         }
 
         Instance = this;
+        DontDestroyOnLoad(gameObject); // <- para que sobreviva entre escenas si es necesario
+
         recursos[RecursoType.Palmeras] = 300;
         recursos[RecursoType.Cafe] = 0;
     }
