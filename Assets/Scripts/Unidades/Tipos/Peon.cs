@@ -1,4 +1,4 @@
-﻿using UnityEngine;
+using UnityEngine;
 using UnityEngine.AI;
 
 public class Peon : MonoBehaviour, IUnidad, IMovible, IDaniable, IRecolector
@@ -125,10 +125,5 @@ public class Peon : MonoBehaviour, IUnidad, IMovible, IDaniable, IRecolector
         vida += cantidad;
         if (vida > vidaMaxima)
             vida = vidaMaxima;
-    }
-
-    public void RecolectarRecursos()
-    {
-        // Ya está es manejado en Update y Recolectar()
     }
 }

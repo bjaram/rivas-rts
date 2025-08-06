@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using UnityEngine;
+
 public sealed class UnitSelectionManager : MonoBehaviour
 {
     public static UnitSelectionManager Instance { get; private set; }
@@ -79,8 +80,7 @@ public sealed class UnitSelectionManager : MonoBehaviour
     { 
        DeselectAll();
        unitsSelected.Add(unit);
-       TriggerSelectionIndicator(unit, true);
-       EnableUnitMovement(unit,true);
+       SelectUnit(unit, true);
     }
 
     private void EnableUnitMovement(GameObject unit, bool shouldMove)
@@ -92,8 +92,7 @@ public sealed class UnitSelectionManager : MonoBehaviour
     {
         foreach (GameObject unit in unitsSelected)
         {
-            TriggerSelectionIndicator(unit, false);
-            EnableUnitMovement(unit, false);
+            SelectUnit(unit, false);
         }
         
         groundMarker.SetActive(false);
@@ -105,13 +104,11 @@ public sealed class UnitSelectionManager : MonoBehaviour
         if (!unitsSelected.Contains(unit))
         {
             unitsSelected.Add(unit);
-            TriggerSelectionIndicator(unit, true);
-            EnableUnitMovement(unit, true);
+            SelectUnit(unit, true);
         }
         else
         {
-            EnableUnitMovement(unit, false);
-            TriggerSelectionIndicator(unit, false);
+            SelectUnit(unit, false);
             unitsSelected.Remove(unit);
         }
     }
@@ -119,5 +116,25 @@ public sealed class UnitSelectionManager : MonoBehaviour
     private void TriggerSelectionIndicator(GameObject unit, bool isEnabled)
     {
         unit.transform.GetChild(0).gameObject.SetActive(isEnabled);
+    }
+
+    public void DragSelect(GameObject unit)
+    {
+        if (!unitsSelected.Contains(unit))
+        {
+            unitsSelected.Add(unit);
+            SelectUnit(unit, true);
+        }
+        else
+        {
+            SelectUnit(unit, false);
+            unitsSelected.Remove(unit);
+        }
+    }
+
+    private void SelectUnit(GameObject unit, bool isSelected)
+    {
+        TriggerSelectionIndicator(unit, isSelected);
+        EnableUnitMovement(unit, isSelected);
     }
 }
