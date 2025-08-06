@@ -19,8 +19,8 @@ public class ResourceManager : MonoBehaviour
         }
 
         Instance = this;
-        recursos[RecursoType.Palmeras] = 300;
-        recursos[RecursoType.Cafe] = 0;
+        DontDestroyOnLoad(gameObject); // <- para que sobreviva entre escenas si es necesario
+
     }
 
     public bool Gastar(RecursoType tipo, int cantidad)
