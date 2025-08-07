@@ -126,4 +126,9 @@ public class Peon : MonoBehaviour, IUnidad, IMovible, IDaniable, IRecolector
         if (vida > vidaMaxima)
             vida = vidaMaxima;
     }
+
+    public void RecolectarRecursos()
+    {
+        // Ya está es manejado en Update y Recolectar()
+    }
 }
