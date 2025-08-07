@@ -31,7 +31,6 @@ public abstract class SitioConstruccionBase : MonoBehaviour
     public virtual void RecibirRecursos(Peon peon, int cantidad)
     {
         recursosAcumulados += cantidad;
-        Debug.Log($"Recursos acumulados: {recursosAcumulados}/{recursosNecesarios}"); // ← Añade esta línea
 
         if (usarResourceManager)
         {
@@ -61,7 +60,14 @@ public abstract class SitioConstruccionBase : MonoBehaviour
     {
         if (prefabEdificioFinal != null)
         {
-            Instantiate(prefabEdificioFinal, transform.position + offsetSpawnEdificio, Quaternion.identity);
+            GameObject nuevaCasonaGO = Instantiate(prefabEdificioFinal, transform.position + offsetSpawnEdificio, Quaternion.identity);
+
+            Casona casonaFinal = nuevaCasonaGO.GetComponent<Casona>();
+            if (casonaFinal != null)
+            {
+                casonaFinal.AsignarCubosProgreso(cubosProgreso);
+            }
+
             Debug.Log("✅ Edificio construido: " + prefabEdificioFinal.name);
         }
         else
@@ -69,7 +75,7 @@ public abstract class SitioConstruccionBase : MonoBehaviour
             Debug.LogWarning("⚠️ Prefab del edificio final no asignado.");
         }
 
-        Destroy(gameObject); // eliminar sombra de construcción
+        Destroy(gameObject); // eliminar sombra
     }
 
     public bool EstaCompleto()

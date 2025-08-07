@@ -1,5 +1,6 @@
+﻿using System.Collections;
+using System.Collections.Generic;
 using UnityEngine;
-using System.Collections;
 
 public class Casona : MonoBehaviour, IBase
 {
@@ -7,9 +8,13 @@ public class Casona : MonoBehaviour, IBase
     [SerializeField] private int saludActual;
     [SerializeField] private int costePalmeras = 200;
     [SerializeField] private float tiempoConstruccion = 5f;
+    [SerializeField] private Transform puntoSpawn;
 
     private EstadoBase estado = EstadoBase.EnConstruccion;
     private IEstadoBase estadoActual;
+
+    // 🔗 Cubos de progreso asociados
+    private List<GameObject> cubosAsociados = new();
 
     private void Start()
     {
@@ -57,12 +62,18 @@ public class Casona : MonoBehaviour, IBase
         {
             CambiarEstado(new EstadoDestruida());
             estado = EstadoBase.Destruida;
-            Debug.Log("�La Casona ha sido destruida!");
+            Debug.Log("¡La Casona ha sido destruida!");
         }
     }
 
     public void ProducirUnidad(UnidadType tipo)
     {
+        if (estado != EstadoBase.Activa)
+        {
+            Debug.LogWarning("⚠️ La Casona aún no está construida. No se pueden crear unidades.");
+            return;
+        }
+
         estadoActual?.ProducirUnidad(this, tipo);
     }
 
@@ -75,5 +86,23 @@ public class Casona : MonoBehaviour, IBase
     {
         estadoActual = nuevoEstado;
         estadoActual.Ejecutar(this);
+    }
+
+    public Transform GetSpawnPoint()
+    {
+        return puntoSpawn;
+    }
+
+    // 🔗 Método nuevo: recibe los cubos del sitio de construcción
+    public void AsignarCubosProgreso(List<GameObject> cubos)
+    {
+        cubosAsociados = cubos;
+
+        foreach (var cubo in cubosAsociados)
+        {
+            cubo.transform.SetParent(this.transform); // opcional
+        }
+
+        Debug.Log("🎯 Cubos asociados a la Casona final.");
     }
 }
