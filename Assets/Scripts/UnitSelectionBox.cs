@@ -1,3 +1,6 @@
+
+using System.Collections;
+using System.Collections.Generic;
 using UnityEngine;
  
 public class UnitSelectionBox : MonoBehaviour
@@ -11,6 +14,7 @@ public class UnitSelectionBox : MonoBehaviour
  
     Vector2 startPosition;
     Vector2 endPosition;
+    bool isDragging = false;
  
     private void Start()
     {
@@ -26,27 +30,41 @@ public class UnitSelectionBox : MonoBehaviour
         if (Input.GetMouseButtonDown(0))
         {
             startPosition = Input.mousePosition;
- 
-            // For selection the Units
             selectionBox = new Rect();
+            isDragging = false; // reset
         }
  
         // When Dragging
         if (Input.GetMouseButton(0))
         {
             endPosition = Input.mousePosition;
-            DrawVisual();
-            DrawSelection();
+    
+            // Determine if user is actually dragging (to avoid conflict with single click)
+            if ((startPosition - endPosition).magnitude > 10f)
+            {
+                isDragging = true;
+                DrawVisual();
+                DrawSelection();
+            }
         }
  
         // When Releasing
         if (Input.GetMouseButtonUp(0))
         {
-            SelectUnits();
- 
+            if (isDragging)
+            {
+                if (!Input.GetKey(KeyCode.LeftShift))
+                {
+                    UnitSelectionManager.Instance.DeselectAll();
+                }
+
+                SelectUnits();
+            }
+
             startPosition = Vector2.zero;
             endPosition = Vector2.zero;
             DrawVisual();
+            isDragging = false;
         }
     }
  

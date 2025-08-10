@@ -10,10 +10,11 @@ public sealed class UnitSelectionManager : MonoBehaviour
     
     public LayerMask clickable;
     public LayerMask ground;
+    public LayerMask attackable;
+    public bool attackCursorVisible;
     public GameObject groundMarker;
     
     private Camera cam;
-
     
     //Singleton 
     void Awake()
@@ -45,12 +46,12 @@ public sealed class UnitSelectionManager : MonoBehaviour
             {
                 if (Input.GetKey(KeyCode.LeftShift))
                 {
-                    MultipleSelection(hit.collider.gameObject);
+                    MultiSelect(hit.collider.gameObject);
                 }
                 else
                 {
                     SelectByClicking(hit.collider.gameObject);
-                }
+                };
             }
             else
             {
@@ -61,7 +62,7 @@ public sealed class UnitSelectionManager : MonoBehaviour
             }
         }
         
-        if (Input.GetMouseButtonDown(1) && allUnitsList.Count > 0)
+        if (Input.GetMouseButtonDown(1) && unitsSelected.Count > 0)
         {
             RaycastHit hit;
             Ray ray = cam.ScreenPointToRay(Input.mousePosition);
@@ -74,6 +75,48 @@ public sealed class UnitSelectionManager : MonoBehaviour
                 groundMarker.SetActive(true);
             }
         }
+        
+        // Attack Target
+        if (unitsSelected.Count > 0 && AtLeastOneOffensiveUnit(unitsSelected))
+        {
+            RaycastHit hit;
+            Ray ray = cam.ScreenPointToRay(Input.mousePosition);
+
+            if (Physics.Raycast(ray, out hit, Mathf.Infinity, attackable))
+            {
+                Debug.Log("Enemy Hovered with mouse");
+
+                attackCursorVisible = true; 
+                
+                if (Input.GetMouseButtonDown(1))
+                {
+                    Transform target = hit.transform;
+                    foreach (var unit in unitsSelected)
+                    {
+                        if(unit.GetComponent<AttackController>())
+                        {
+                            unit.GetComponent<AttackController>().targetToAttack = target;
+                        }
+                    }
+                }
+            }
+            else
+            {
+                attackCursorVisible = false;
+            }
+        }
+    }
+
+    private bool AtLeastOneOffensiveUnit(List<GameObject> unitsSelected)
+    {
+        foreach (var unit in unitsSelected)
+        {
+            if (unit.GetComponent<AttackController>())
+            {
+                return true;
+            }
+        }
+        return false;
     }
 
     void SelectByClicking(GameObject unit)
@@ -88,18 +131,19 @@ public sealed class UnitSelectionManager : MonoBehaviour
        unit.GetComponent<UnitMovement>().enabled = shouldMove;
     }
 
-    void DeselectAll()
+    public void DeselectAll()
     {
-        foreach (GameObject unit in unitsSelected)
+        foreach (var unit in unitsSelected)
         {
             SelectUnit(unit, false);
         }
         
         groundMarker.SetActive(false);
         unitsSelected.Clear();
+        
     }
 
-    void MultipleSelection(GameObject unit)
+    void MultiSelect(GameObject unit)
     {
         if (!unitsSelected.Contains(unit))
         {
