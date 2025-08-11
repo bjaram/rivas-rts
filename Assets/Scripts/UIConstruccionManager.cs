@@ -4,59 +4,158 @@ using UnityEngine.UI;
 
 public class UIConstruccionManager : MonoBehaviour
 {
-    [Header("UI")]
-    public TextMeshProUGUI textoPalmeras;
-    public Button botonConstruirCasona;
-    public Button botonConstruirBaseMilitar;
+    [Header("UI Recursos")]
+    [SerializeField] private TextMeshProUGUI textoPalmeras;
 
-    [Header("Construcción")]
-    public GameObject sombraCasona;
-    public GameObject prefabCasona;
-    public GameObject sombraBaseMilitar;
-    public GameObject prefabBaseMilitar;
+    [Header("Botones de construcción")]
+    [SerializeField] private Button botonConstruirCasona;
+    [SerializeField] private Button botonConstruirBaseMilitar;
+    [SerializeField] private Button botonCrearPeon; // si lo usas aquí
 
+    [Header("Costos")]
+    [SerializeField] private int costoPeon = 500;
+    [SerializeField] private int costoCasona = 1000;
+    [SerializeField] private int costoBaseMilitar = 1500;
+
+    [Header("Prefabs a crear")]
+    [SerializeField] private GameObject prefabCasona;
+    [SerializeField] private GameObject prefabBaseMilitar;
+
+    [Header("Sombras/Lugares de construcción")]
+    [SerializeField] private Transform sombraCasona;
+    [SerializeField] private Transform sombraBaseMilitar;
+
+    [Header("Spawns")]
+    [SerializeField] private Transform peonSpawnFallback;
+
+    // Estado runtime
+    private Casona casonaActiva;
     private bool casonaConstruida = false;
     private bool baseMilitarConstruida = false;
 
     private void Start()
     {
-        botonConstruirCasona.onClick.AddListener(ConstruirCasona);
-        botonConstruirBaseMilitar.onClick.AddListener(ConstruirBaseMilitar);
-        botonConstruirCasona.gameObject.SetActive(false);
-        botonConstruirBaseMilitar.gameObject.SetActive(false);
+        if (botonConstruirCasona != null) botonConstruirCasona.onClick.AddListener(ConstruirCasona);
+        if (botonConstruirBaseMilitar != null) botonConstruirBaseMilitar.onClick.AddListener(ConstruirBaseMilitar);
+        if (botonCrearPeon != null) botonCrearPeon.onClick.AddListener(CrearPeon);
+
+        Toggle(botonConstruirCasona, false);
+        Toggle(botonConstruirBaseMilitar, false);
+        Toggle(botonCrearPeon, false);
     }
 
     private void Update()
     {
-        int cantidad = ResourceManager.Instance.ObtenerValor(RecursoType.Palmeras);
-        textoPalmeras.text = $"🌴 Palmeras: {cantidad}";
+        if (ResourceManager.Instance == null) return;
 
-        if (!casonaConstruida && cantidad >= 1000)
-            botonConstruirCasona.gameObject.SetActive(true);
+        int palmeras = ResourceManager.Instance.ObtenerValor(RecursoType.Palmeras);
+        if (textoPalmeras != null)
+            textoPalmeras.text = $"🌴 Palmeras: {palmeras}";
 
-        if (casonaConstruida && !baseMilitarConstruida && cantidad >= 1000)
-            botonConstruirBaseMilitar.gameObject.SetActive(true);
+        Toggle(botonCrearPeon, palmeras >= costoPeon);
+        Toggle(botonConstruirCasona, !casonaConstruida && palmeras >= costoCasona);
+        Toggle(botonConstruirBaseMilitar, !baseMilitarConstruida && palmeras >= costoBaseMilitar);
+    }
+
+    private void Toggle(Button b, bool on)
+    {
+        if (b == null) return;
+        if (b.gameObject.activeSelf != on) b.gameObject.SetActive(on);
+        b.interactable = on;
+    }
+
+    // ============================
+    // Botones
+    // ============================
+
+    private void CrearPeon()
+    {
+        if (!ResourceManager.Instance.Gastar(RecursoType.Palmeras, costoPeon))
+        {
+            Debug.Log("⚠️ Faltan palmeras para crear Peón.");
+            return;
+        }
+
+        Vector3 spawnPos = peonSpawnFallback ? peonSpawnFallback.position : Vector3.zero;
+        if (casonaActiva != null && casonaActiva.GetSpawnPoint() != null)
+            spawnPos = casonaActiva.GetSpawnPoint().position;
+
+        if (!UnidadFactory.Instance)
+        {
+            Debug.LogError("❌ Falta UnidadFactory en escena.");
+            return;
+        }
+
+        var u = UnidadFactory.Instance.CrearUnidad(UnidadType.Peon, spawnPos);
+        if (u != null) Debug.Log("✅ Peón creado.");
     }
 
     private void ConstruirCasona()
     {
-        if (ResourceManager.Instance.Gastar(RecursoType.Palmeras, 1000))
+        if (casonaConstruida)
         {
-            Instantiate(prefabCasona, sombraCasona.transform.position, Quaternion.identity);
-            Destroy(sombraCasona);
-            casonaConstruida = true;
-            botonConstruirCasona.gameObject.SetActive(false);
+            Debug.Log("ℹ️ La Casona ya existe.");
+            return;
         }
+
+        if (!ResourceManager.Instance.Gastar(RecursoType.Palmeras, costoCasona))
+        {
+            Debug.Log("⚠️ Faltan palmeras para Casona.");
+            return;
+        }
+
+        if (prefabCasona == null || sombraCasona == null)
+        {
+            Debug.LogError("❌ Prefab Casona o SombraCasona sin asignar.");
+            return;
+        }
+
+        GameObject go = Instantiate(prefabCasona, sombraCasona.position, Quaternion.identity);
+        casonaActiva = go.GetComponent<Casona>();
+        casonaConstruida = true;
+
+        if (sombraCasona.gameObject != null) Destroy(sombraCasona.gameObject);
+
+        Debug.Log("🏠 Casona construida.");
     }
 
     private void ConstruirBaseMilitar()
     {
-        if (ResourceManager.Instance.Gastar(RecursoType.Palmeras, 1000))
+        if (baseMilitarConstruida)
         {
-            Instantiate(prefabBaseMilitar, sombraBaseMilitar.transform.position, Quaternion.identity);
-            Destroy(sombraBaseMilitar);
-            baseMilitarConstruida = true;
-            botonConstruirBaseMilitar.gameObject.SetActive(false);
+            Debug.Log("ℹ️ La Base Militar ya existe.");
+            return;
+        }
+
+        if (!ResourceManager.Instance.Gastar(RecursoType.Palmeras, costoBaseMilitar))
+        {
+            Debug.Log("⚠️ Faltan palmeras para Base Militar.");
+            return;
+        }
+
+        if (prefabBaseMilitar == null || sombraBaseMilitar == null)
+        {
+            Debug.LogError("❌ Prefab BaseMilitar o SombraBaseMilitar sin asignar.");
+            return;
+        }
+
+        GameObject nuevaBase = Instantiate(prefabBaseMilitar, sombraBaseMilitar.position, Quaternion.identity);
+        baseMilitarConstruida = true;
+
+        if (sombraBaseMilitar.gameObject != null) Destroy(sombraBaseMilitar.gameObject);
+
+        Debug.Log("🛡️ Base Militar construida.");
+
+        // Asignar dinámicamente la Base al UI de entrenamiento
+        var uiEntrenamiento = Object.FindFirstObjectByType<UIEntrenamiento>();
+        if (uiEntrenamiento != null)
+        {
+            var bm = nuevaBase.GetComponent<BaseMilitar>();
+            if (bm != null)
+            {
+                uiEntrenamiento.SetBaseMilitarDestino(bm);
+                Debug.Log("🔗 UIEntrenamiento ahora apunta a la Base Militar recién construida.");
+            }
         }
     }
 }
