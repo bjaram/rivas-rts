@@ -262,6 +262,7 @@ MonoBehaviour:
   groundLayer:
     serializedVersion: 2
     m_Bits: 8
+  isCommandedToMove: 0
 --- !u!114 &2158432710020497649
 MonoBehaviour:
   m_ObjectHideFlags: 0

@@ -94,7 +94,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 64522c678986b7f4991974bd94d37448, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  attackingDistance: 2
+  attackingDistance: 1
 --- !u!114 &-2219119630189576249
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -187,6 +187,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 79fda21d87841c340aae141e3fe26393, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  stopAttackDistance: 1.2
 --- !u!1102 &5274814430635010713
 AnimatorState:
   serializedVersion: 6
