@@ -16,7 +16,7 @@ GameObject:
   - component: {fileID: 5728980933914153472}
   m_Layer: 0
   m_Name: Esperancita
-  m_TagString: Untagged
+  m_TagString: Esperancita
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0

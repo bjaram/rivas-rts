@@ -8,6 +8,11 @@ TagManager:
   - CasonaFinal
   - PlantaCafe
   - CuboProgreso
+  - Peon
+  - Campesino
+  - Chaman
+  - Esperancita
+  - Morenito
   layers:
   - Default
   - TransparentFX

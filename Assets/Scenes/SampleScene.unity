@@ -1200,6 +1200,18 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 4310541451293023011, guid: 702415588d5c6e44384dbdc1046c15d2, type: 3}
+      propertyPath: m_LocalScale.x
+      value: 3.5
+      objectReference: {fileID: 0}
+    - target: {fileID: 4310541451293023011, guid: 702415588d5c6e44384dbdc1046c15d2, type: 3}
+      propertyPath: m_LocalScale.y
+      value: 3.5
+      objectReference: {fileID: 0}
+    - target: {fileID: 4310541451293023011, guid: 702415588d5c6e44384dbdc1046c15d2, type: 3}
+      propertyPath: m_LocalScale.z
+      value: 3.5
+      objectReference: {fileID: 0}
     - target: {fileID: 5968210563305588149, guid: 702415588d5c6e44384dbdc1046c15d2, type: 3}
       propertyPath: m_Name
       value: SombraCasona
@@ -3094,6 +3106,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 1823658726}
+  - component: {fileID: 1823658727}
   m_Layer: 0
   m_Name: PuntoSalida
   m_TagString: Untagged
@@ -3116,6 +3129,19 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &1823658727
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1823658725}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5884227d3a388b34c8981503c6af5e6c, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  maxDistance: 3
 --- !u!1001 &1847912377
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -3169,7 +3195,7 @@ PrefabInstance:
       value: Peon2
       objectReference: {fileID: 0}
     m_RemovedComponents:
-    - {fileID: -4557416141015406370, guid: c145ea6ae876c174fae94b48f6ea1a32, type: 3}
+    - {fileID: 0}
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
     m_AddedComponents: []
@@ -3522,6 +3548,18 @@ PrefabInstance:
       value: UnidadFactoryGO
       objectReference: {fileID: 0}
     - target: {fileID: 3432671946547572515, guid: b297207a6ff9d2d49927cd8fd6e93ba2, type: 3}
+      propertyPath: m_LocalScale.x
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 3432671946547572515, guid: b297207a6ff9d2d49927cd8fd6e93ba2, type: 3}
+      propertyPath: m_LocalScale.y
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 3432671946547572515, guid: b297207a6ff9d2d49927cd8fd6e93ba2, type: 3}
+      propertyPath: m_LocalScale.z
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 3432671946547572515, guid: b297207a6ff9d2d49927cd8fd6e93ba2, type: 3}
       propertyPath: m_LocalPosition.x
       value: 383.2
       objectReference: {fileID: 0}
@@ -3564,7 +3602,7 @@ PrefabInstance:
     - target: {fileID: 6230810470055452595, guid: b297207a6ff9d2d49927cd8fd6e93ba2, type: 3}
       propertyPath: chamanPrefab
       value: 
-      objectReference: {fileID: 5492744773412145168, guid: 171262ee75cd75b4b968e9fd6f800f85, type: 3}
+      objectReference: {fileID: 6819616192587263991, guid: 0b0fed039ceb07240b7ce284a017d67f, type: 3}
     - target: {fileID: 6230810470055452595, guid: b297207a6ff9d2d49927cd8fd6e93ba2, type: 3}
       propertyPath: morenitoPrefab
       value: 
@@ -3572,7 +3610,7 @@ PrefabInstance:
     - target: {fileID: 6230810470055452595, guid: b297207a6ff9d2d49927cd8fd6e93ba2, type: 3}
       propertyPath: campesinoPrefab
       value: 
-      objectReference: {fileID: 4001518356222183141, guid: e1561be0cb5b54343aabb09bf0569443, type: 3}
+      objectReference: {fileID: 8898521259064724933, guid: bb0857239f12317439854dc56aeaf79a, type: 3}
     - target: {fileID: 6230810470055452595, guid: b297207a6ff9d2d49927cd8fd6e93ba2, type: 3}
       propertyPath: esperancitaPrefab
       value: 
