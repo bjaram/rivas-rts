@@ -126,6 +126,7 @@ GameObject:
   - component: {fileID: 4911483879499009187}
   - component: {fileID: 2158432710020497649}
   - component: {fileID: -4785922698411219350}
+  - component: {fileID: 3648406880168270825}
   m_Layer: 6
   m_Name: Peon1
   m_TagString: Untagged
@@ -235,7 +236,7 @@ NavMeshAgent:
   m_Enabled: 1
   m_AgentTypeID: 0
   m_Radius: 1
-  m_Speed: 5
+  m_Speed: 18
   m_Acceleration: 8
   avoidancePriority: 50
   m_AngularSpeed: 120
@@ -286,3 +287,34 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 518ffcebf61b5334483c834b2c6248ff, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  vidaMaxima: 60
+  velocidad: 18
+  capacidadCarga: 50
+  distanciaLlegada: 0.6
+--- !u!54 &3648406880168270825
+Rigidbody:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6470141303816932477}
+  serializedVersion: 5
+  m_Mass: 1
+  m_LinearDamping: 0
+  m_AngularDamping: 0.05
+  m_CenterOfMass: {x: 0, y: 0, z: 0}
+  m_InertiaTensor: {x: 1, y: 1, z: 1}
+  m_InertiaRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ImplicitCom: 1
+  m_ImplicitTensor: 1
+  m_UseGravity: 1
+  m_IsKinematic: 1
+  m_Interpolate: 0
+  m_Constraints: 0
+  m_CollisionDetection: 0

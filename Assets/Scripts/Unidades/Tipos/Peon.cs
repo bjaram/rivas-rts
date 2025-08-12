@@ -3,127 +3,174 @@ using UnityEngine.AI;
 
 public class Peon : MonoBehaviour, IUnidad, IMovible, IDaniable, IRecolector
 {
-    private int vida = 60;
-    private float velocidad = 15f;
-    private int vidaMaxima = 60;
-    private int cargaActual = 0;
-    private int cargaMaxima = 50;
-    private bool llevandoRecursos = false;
-    private bool casonaConstruida = false;
+    [Header("Stats")]
+    public int vidaMaxima = 60;
+    public float velocidad = 3.5f;
+    public int capacidadCarga = 50;
+    public float distanciaLlegada = 0.6f;
 
+    private int vida;
+    private int cargaActual;
     private NavMeshAgent agente;
-    private GameObject objetivoRecoleccion;
-    private SitioConstruccionBase objetivoConstruccion;
+    private GameObject objetivoPlanta;
+
+    // ===== Entrenamiento =====
+    /// <summary>Indica si este peón ha sido ordenado a entrenar en la Base.</summary>
+    public bool DeseaEntrenar { get; private set; } = false;
+
+    /// <summary>Referencia a la base a la que fue asignado para entrenar (opcional).</summary>
+    private BaseMilitar baseObjetivo;
+
+    private Renderer cachedRenderer;
+
+    private void Awake()
+    {
+        vida = vidaMaxima;
+        agente = GetComponent<NavMeshAgent>();
+        if (agente != null) agente.speed = velocidad;
+
+        cachedRenderer = GetComponentInChildren<Renderer>();
+    }
 
     private void Start()
     {
-        agente = GetComponent<NavMeshAgent>();
-        agente.speed = velocidad;
-
-        BuscarNuevaPlanta();
+        BuscarRecurso(); // comienza a recolectar palmeras
     }
 
     private void Update()
     {
-        if (!agente.pathPending && agente.remainingDistance < 0.5f)
+        // Si fue ordenado a entrenar, este peón ya no sigue el bucle de recolección aquí.
+        if (DeseaEntrenar || agente == null) return;
+
+        if (!agente.pathPending && agente.remainingDistance <= distanciaLlegada)
         {
-            if (!llevandoRecursos)
-            {
-                Recolectar();
-            }
-            else
-            {
-                EntregarRecursos();
-            }
+            // Llegó a la planta -> recolecta y busca otra
+            Recolectar();
+            BuscarRecurso();
         }
     }
 
-    private void BuscarNuevaPlanta()
+    // =========================
+    // IRecolector
+    // =========================
+    public void BuscarRecurso()
     {
-        GameObject[] plantas = GameObject.FindGameObjectsWithTag("PlantaPalmera");
-        if (plantas.Length == 0)
+        if (DeseaEntrenar) return; // si va a entrenar, no buscar más recursos
+
+        const string tag = "PlantaPalmera";
+        GameObject[] plantas = GameObject.FindGameObjectsWithTag(tag);
+
+        if (plantas == null || plantas.Length == 0)
         {
-            Debug.LogWarning("❌ No hay plantas disponibles para recolectar.");
+            objetivoPlanta = null;
+            // Reintentar en 1s si no hay plantas
+            Invoke(nameof(BuscarRecurso), 1f);
             return;
         }
 
-        objetivoRecoleccion = plantas[Random.Range(0, plantas.Length)];
-        agente.SetDestination(objetivoRecoleccion.transform.position);
+        objetivoPlanta = plantas[Random.Range(0, plantas.Length)];
+        if (agente != null) agente.SetDestination(objetivoPlanta.transform.position);
     }
 
-    private void BuscarSitioConstruccion()
+    public void Recolectar()
     {
-        SitioConstruccionBase[] sitios = FindObjectsByType<SitioConstruccionBase>(FindObjectsSortMode.None);
-        foreach (var sitio in sitios)
+        if (DeseaEntrenar) return;
+
+        cargaActual = capacidadCarga;
+        ResourceManager.Instance.Incrementar(RecursoType.Palmeras, cargaActual);
+        cargaActual = 0;
+    }
+
+    // =========================
+    // Flujo de ENTRENAMIENTO
+    // =========================
+
+    /// <summary>
+    /// Orden externa: este peón debe desplazarse a una Base Militar para entrenar.
+    /// Deja de recolectar y navega hacia la base (al objeto raíz de la base o su punto de entrada según tu setup).
+    /// </summary>
+    public void EnviarAEntrenamiento(BaseMilitar baseMilitar)
+    {
+
+        if (baseMilitar == null) return;
+
+        baseObjetivo = baseMilitar;
+        DeseaEntrenar = true;
+
+        // Rompe cualquier ciclo de recolección en curso
+        objetivoPlanta = null;
+        CancelInvoke(nameof(BuscarRecurso));
+
+        if (agente != null)
         {
-            if (!sitio.EstaCompleto())
-            {
-                objetivoConstruccion = sitio;
-                agente.SetDestination(sitio.transform.position);
-                return;
-            }
-        }
+            agente.isStopped = false;
+            agente.ResetPath();
+            agente.stoppingDistance = 0.2f;
 
-        Debug.LogWarning("⚠️ No hay sitios de construcción disponibles.");
-    }
+            // Ir al punto de entrada si existe; si no, al root de la base
+            Vector3 destino = baseMilitar.GetPuntoEntrada() != null
+                ? baseMilitar.GetPuntoEntrada().position
+                : baseMilitar.transform.position;
 
-    private void Recolectar()
-    {
-        cargaActual = cargaMaxima;
-        llevandoRecursos = true;
-        BuscarSitioConstruccion();
-    }
-
-    private void EntregarRecursos()
-    {
-        if (objetivoConstruccion != null)
-        {
-            objetivoConstruccion.RecibirRecursos(this, cargaActual);
-            cargaActual = 0;
-            llevandoRecursos = false;
-
-            if (!objetivoConstruccion.EstaCompleto())
-            {
-                BuscarNuevaPlanta();
-            }
-            else
-            {
-                if (!casonaConstruida)
-                {
-                    casonaConstruida = true;
-                    BuscarSitioConstruccion(); // Ahora irá a la BaseMilitar
-                }
-                else
-                {
-                    BuscarNuevaPlanta(); // Ya construyó Casona y BaseMilitar
-                }
-            }
+            agente.SetDestination(destino);
         }
     }
 
+    /// <summary>
+    /// Llamado por BaseMilitar cuando acepta y encola a este Peón.
+    /// Detiene navegación para no interferir y lo entrega al control de la base.
+    /// </summary>
+    public void PrepararseParaEntrenar(BaseMilitar baseRef, Vector3 posEntrada)
+    {
+        baseObjetivo = baseRef;
+        DeseaEntrenar = true;
+
+        if (agente != null)
+        {
+            agente.isStopped = true;
+            agente.ResetPath();
+        }
+    }
+
+    /// <summary>
+    /// Llamado por BaseMilitar justo antes de iniciar el tiempo de entrenamiento.
+    /// Mueve y congela al peón; opcionalmente oculta su Renderer para “desaparecerlo” durante el training.
+    /// </summary>
+    public void TeletransportarYCongelar(Vector3 pos)
+    {
+        if (agente != null)
+        {
+            // Warp evita problemas de pathing
+            agente.Warp(pos);
+            // Deshabilitar agente durante el entrenamiento
+            agente.enabled = false;
+        }
+
+        if (cachedRenderer != null) cachedRenderer.enabled = false;
+    }
+
+    // =========================
+    // IUnidad / IMovible / IDaniable
+    // =========================
     public void Mover(Vector3 destino)
     {
-        agente.SetDestination(destino);
+        if (agente != null && agente.enabled)
+        {
+            agente.isStopped = false;
+            agente.SetDestination(destino);
+        }
     }
 
     public void RecibirDanio(int cantidad)
     {
         vida -= cantidad;
-        if (vida <= 0)
-        {
-            Destroy(gameObject);
-        }
+        if (vida <= 0) Destroy(gameObject);
     }
 
-    public int ObtenerVida()
-    {
-        return vida;
-    }
+    public int ObtenerVida() => vida;
 
     public void RecibirCuracion(int cantidad)
     {
-        vida += cantidad;
-        if (vida > vidaMaxima)
-            vida = vidaMaxima;
+        vida = Mathf.Min(vida + cantidad, vidaMaxima);
     }
 }

@@ -5,6 +5,9 @@ TagManager:
   serializedVersion: 3
   tags:
   - PlantaPalmera
+  - CasonaFinal
+  - PlantaCafe
+  - CuboProgreso
   layers:
   - Default
   - TransparentFX

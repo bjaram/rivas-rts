@@ -5,27 +5,27 @@ public class ResourceManager : MonoBehaviour
 {
     public static ResourceManager Instance { get; private set; }
 
-    private Dictionary<RecursoType, int> recursos = new();
+    private readonly Dictionary<RecursoType, int> recursos = new();
 
     public delegate void CambioRecurso(RecursoType tipo, int nuevoValor);
     public event CambioRecurso OnRecursoCambiado;
 
+    [Header("Inicio")]
+    [SerializeField] private int palmerasIniciales = 0;
+
     private void Awake()
     {
-        if (Instance != null)
-        {
-            Destroy(gameObject);
-            return;
-        }
-
+        if (Instance != null && Instance != this) { Destroy(gameObject); return; }
         Instance = this;
-        DontDestroyOnLoad(gameObject); // <- para que sobreviva entre escenas si es necesario
 
+        recursos[RecursoType.Palmeras] = palmerasIniciales;
     }
 
     public bool Gastar(RecursoType tipo, int cantidad)
     {
+        if (!recursos.ContainsKey(tipo)) return false;
         if (recursos[tipo] < cantidad) return false;
+
         recursos[tipo] -= cantidad;
         OnRecursoCambiado?.Invoke(tipo, recursos[tipo]);
         return true;
@@ -33,12 +33,13 @@ public class ResourceManager : MonoBehaviour
 
     public void Incrementar(RecursoType tipo, int cantidad)
     {
+        if (!recursos.ContainsKey(tipo)) recursos[tipo] = 0;
         recursos[tipo] += cantidad;
         OnRecursoCambiado?.Invoke(tipo, recursos[tipo]);
     }
 
     public int ObtenerValor(RecursoType tipo)
     {
-        return recursos[tipo];
+        return recursos.ContainsKey(tipo) ? recursos[tipo] : 0;
     }
 }
