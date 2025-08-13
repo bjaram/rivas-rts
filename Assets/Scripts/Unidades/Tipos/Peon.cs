@@ -15,11 +15,8 @@ public class Peon : MonoBehaviour, IUnidad, IMovible, IDaniable, IRecolector
     private GameObject objetivoPlanta;
 
     // ===== Entrenamiento =====
-    /// <summary>Indica si este peón ha sido ordenado a entrenar en la Base.</summary>
+    /// <summary>Indica si este peón ha sido ordenado a entrenar.</summary>
     public bool DeseaEntrenar { get; private set; } = false;
-
-    /// <summary>Referencia a la base a la que fue asignado para entrenar (opcional).</summary>
-    private BaseMilitar baseObjetivo;
 
     private Renderer cachedRenderer;
 
@@ -82,71 +79,59 @@ public class Peon : MonoBehaviour, IUnidad, IMovible, IDaniable, IRecolector
     }
 
     // =========================
-    // Flujo de ENTRENAMIENTO
+    // Flujo de ENTRENAMIENTO (simple en Casona)
     // =========================
 
     /// <summary>
-    /// Orden externa: este peón debe desplazarse a una Base Militar para entrenar.
-    /// Deja de recolectar y navega hacia la base (al objeto raíz de la base o su punto de entrada según tu setup).
+    /// Llamado por SimpleTrainer.Encolar(peon).
+    /// Detiene recolección, apaga el agente y lo “aparca” en el hold point dentro de la Casona.
     /// </summary>
-    public void EnviarAEntrenamiento(BaseMilitar baseMilitar)
+    public void PrepararseParaEntrenarSimple(Vector3 puntoHold)
     {
-
-        if (baseMilitar == null) return;
-
-        baseObjetivo = baseMilitar;
         DeseaEntrenar = true;
 
-        // Rompe cualquier ciclo de recolección en curso
+        // Corta el ciclo de búsqueda
         objetivoPlanta = null;
         CancelInvoke(nameof(BuscarRecurso));
 
+        // Congela navegación
         if (agente != null)
         {
-            agente.isStopped = false;
-            agente.ResetPath();
-            agente.stoppingDistance = 0.2f;
-
-            // Ir al punto de entrada si existe; si no, al root de la base
-            Vector3 destino = baseMilitar.GetPuntoEntrada() != null
-                ? baseMilitar.GetPuntoEntrada().position
-                : baseMilitar.transform.position;
-
-            agente.SetDestination(destino);
-        }
-    }
-
-    /// <summary>
-    /// Llamado por BaseMilitar cuando acepta y encola a este Peón.
-    /// Detiene navegación para no interferir y lo entrega al control de la base.
-    /// </summary>
-    public void PrepararseParaEntrenar(BaseMilitar baseRef, Vector3 posEntrada)
-    {
-        baseObjetivo = baseRef;
-        DeseaEntrenar = true;
-
-        if (agente != null)
-        {
-            agente.isStopped = true;
-            agente.ResetPath();
-        }
-    }
-
-    /// <summary>
-    /// Llamado por BaseMilitar justo antes de iniciar el tiempo de entrenamiento.
-    /// Mueve y congela al peón; opcionalmente oculta su Renderer para “desaparecerlo” durante el training.
-    /// </summary>
-    public void TeletransportarYCongelar(Vector3 pos)
-    {
-        if (agente != null)
-        {
-            // Warp evita problemas de pathing
-            agente.Warp(pos);
-            // Deshabilitar agente durante el entrenamiento
+            if (agente.enabled)
+            {
+                agente.isStopped = true;
+                agente.ResetPath();
+            }
             agente.enabled = false;
         }
 
-        if (cachedRenderer != null) cachedRenderer.enabled = false;
+        // Mueve al “cuarto” de entrenamiento y, opcional, oculta visualmente
+        transform.position = puntoHold;
+
+        if (cachedRenderer != null)
+        {
+            var rends = GetComponentsInChildren<Renderer>();
+            foreach (var r in rends) r.enabled = false;
+        }
+    }
+
+    /// <summary>
+    /// Si no deseas destruir al peón tras el entrenamiento, puedes devolverlo con esto.
+    /// (En este flujo lo destruimos, así que es opcional.)
+    /// </summary>
+    public void LiberarDespuesEntrenamiento()
+    {
+        if (agente != null)
+        {
+            agente.enabled = true;
+            agente.isStopped = false;
+        }
+
+        var rends = GetComponentsInChildren<Renderer>();
+        foreach (var r in rends) r.enabled = true;
+
+        DeseaEntrenar = false;
+        BuscarRecurso();
     }
 
     // =========================

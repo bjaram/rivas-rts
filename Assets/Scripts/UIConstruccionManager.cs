@@ -10,7 +10,7 @@ public class UIConstruccionManager : MonoBehaviour
     [Header("Botones de construcción")]
     [SerializeField] private Button botonConstruirCasona;
     [SerializeField] private Button botonConstruirBaseMilitar;
-    [SerializeField] private Button botonCrearPeon; // si lo usas aquí
+    [SerializeField] private Button botonCrearPeon; // botón de crear peón
 
     [Header("Costos")]
     [SerializeField] private int costoPeon = 500;
@@ -39,9 +39,10 @@ public class UIConstruccionManager : MonoBehaviour
         if (botonConstruirBaseMilitar != null) botonConstruirBaseMilitar.onClick.AddListener(ConstruirBaseMilitar);
         if (botonCrearPeon != null) botonCrearPeon.onClick.AddListener(CrearPeon);
 
-        Toggle(botonConstruirCasona, false);
-        Toggle(botonConstruirBaseMilitar, false);
-        Toggle(botonCrearPeon, false);
+        // Inicial: los de construir se controlan por recursos en Update; CrearPeon SIEMPRE oculto al inicio
+        SetVisible(botonConstruirCasona, false);
+        SetVisible(botonConstruirBaseMilitar, false);
+        SetVisible(botonCrearPeon, false); // ⬅️ clave
     }
 
     private void Update()
@@ -52,16 +53,30 @@ public class UIConstruccionManager : MonoBehaviour
         if (textoPalmeras != null)
             textoPalmeras.text = $"🌴 Palmeras: {palmeras}";
 
-        Toggle(botonCrearPeon, palmeras >= costoPeon);
-        Toggle(botonConstruirCasona, !casonaConstruida && palmeras >= costoCasona);
-        Toggle(botonConstruirBaseMilitar, !baseMilitarConstruida && palmeras >= costoBaseMilitar);
+        // Botones de construir (orden correcto)
+        SetVisible(botonConstruirCasona, !casonaConstruida && palmeras >= costoCasona);
+        SetVisible(botonConstruirBaseMilitar, casonaConstruida && !baseMilitarConstruida && palmeras >= costoBaseMilitar);
+
+        // Botón Crear Peón: SOLO visible si YA existe la Casona
+        if (!casonaConstruida)
+        {
+            SetVisible(botonCrearPeon, false);
+        }
+        else
+        {
+            SetVisible(botonCrearPeon, true);
+            // Interactuable si hay recursos y la Casona está Activa
+            bool casonaActivaYOK = (casonaActiva != null && casonaActiva.ObtenerEstado() == EstadoBase.Activa);
+            if (botonCrearPeon != null)
+                botonCrearPeon.interactable = casonaActivaYOK && palmeras >= costoPeon;
+        }
     }
 
-    private void Toggle(Button b, bool on)
+    private void SetVisible(Button b, bool visible)
     {
         if (b == null) return;
-        if (b.gameObject.activeSelf != on) b.gameObject.SetActive(on);
-        b.interactable = on;
+        if (b.gameObject.activeSelf != visible) b.gameObject.SetActive(visible);
+        // El interactable se controla aparte donde corresponda
     }
 
     // ============================
@@ -70,6 +85,18 @@ public class UIConstruccionManager : MonoBehaviour
 
     private void CrearPeon()
     {
+        if (casonaActiva == null)
+        {
+            Debug.Log("⚠️ No hay Casona activa.");
+            return;
+        }
+
+        if (casonaActiva.ObtenerEstado() != EstadoBase.Activa)
+        {
+            Debug.Log("ℹ️ La Casona aún no está activa.");
+            return;
+        }
+
         if (!ResourceManager.Instance.Gastar(RecursoType.Palmeras, costoPeon))
         {
             Debug.Log("⚠️ Faltan palmeras para crear Peón.");
@@ -77,7 +104,7 @@ public class UIConstruccionManager : MonoBehaviour
         }
 
         Vector3 spawnPos = peonSpawnFallback ? peonSpawnFallback.position : Vector3.zero;
-        if (casonaActiva != null && casonaActiva.GetSpawnPoint() != null)
+        if (casonaActiva.GetSpawnPoint() != null)
             spawnPos = casonaActiva.GetSpawnPoint().position;
 
         if (!UnidadFactory.Instance)
@@ -116,6 +143,9 @@ public class UIConstruccionManager : MonoBehaviour
 
         if (sombraCasona.gameObject != null) Destroy(sombraCasona.gameObject);
 
+        // Mostrar el botón "Crear Peón" recién ahora
+        SetVisible(botonCrearPeon, true);
+
         Debug.Log("🏠 Casona construida.");
     }
 
@@ -146,7 +176,6 @@ public class UIConstruccionManager : MonoBehaviour
 
         Debug.Log("🛡️ Base Militar construida.");
 
-        // Asignar dinámicamente la Base al UI de entrenamiento
         var uiEntrenamiento = Object.FindFirstObjectByType<UIEntrenamiento>();
         if (uiEntrenamiento != null)
         {

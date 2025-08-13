@@ -9,16 +9,21 @@ public class BaseMilitar : MonoBehaviour, IBase
     [SerializeField] private int saludActual = 800;
     [SerializeField] private EstadoBase estado = EstadoBase.Activa;
 
-    [Header("Entrenamiento (cola)")]
-    [SerializeField] private int capacidadSlots = 2;          // peones simultáneamente
-    [SerializeField] private float tiempoEntrenamiento = 10f; // segundos por peón
-    [Tooltip("Si está activo, cualquier Peón con DeseaEntrenar que entre al trigger se encola automáticamente.")]
-    [SerializeField] private bool aceptarAutomatico = true;
+    [Header("Entrenamiento (cola simple)")]
+    [Tooltip("Número de peones que se entrenan en paralelo")]
+    [SerializeField] private int capacidadSlots = 2;
+    [Tooltip("Segundos que tarda convertir un peón")]
+    [SerializeField] private float tiempoEntrenamiento = 10f;
 
-    [Header("Puntos (recomendado crear como hijos)")]
-    [SerializeField] private Transform puntoEntrada;  // añade un Collider isTrigger aquí o en el objeto raíz
-    [SerializeField] private Transform puntoInterno;  // donde “guardas” al peón mientras entrena
-    [SerializeField] private Transform puntoSalida;   // donde aparece la nueva unidad
+    [Header("Puntos (hijos recomendados)")]
+    [Tooltip("Dónde se aparcan (y opcionalmente ocultan) los peones mientras entrenan")]
+    [SerializeField] private Transform holdPoint;
+    [Tooltip("Dónde aparece la nueva unidad; colócalo sobre el NavMesh")]
+    [SerializeField] private Transform spawnPoint;
+
+    [Header("Conversión")]
+    [Tooltip("Si está en true, destruye el Peón tras convertirlo")]
+    [SerializeField] private bool destruirPeonAlConvertir = true;
 
     private readonly Queue<Peon> colaEspera = new();
     private int slotsOcupados = 0;
@@ -26,26 +31,19 @@ public class BaseMilitar : MonoBehaviour, IBase
     private void Reset()
     {
         // Crear puntos por defecto si no están
-        if (puntoEntrada == null)
+        if (holdPoint == null)
         {
-            var go = new GameObject("PuntoEntrada");
-            go.transform.SetParent(transform);
-            go.transform.localPosition = new Vector3(0, 0, -2f);
-            puntoEntrada = go.transform;
-        }
-        if (puntoInterno == null)
-        {
-            var go = new GameObject("PuntoInterno");
+            var go = new GameObject("HoldPoint");
             go.transform.SetParent(transform);
             go.transform.localPosition = new Vector3(0, 0, 0.5f);
-            puntoInterno = go.transform;
+            holdPoint = go.transform;
         }
-        if (puntoSalida == null)
+        if (spawnPoint == null)
         {
-            var go = new GameObject("PuntoSalida");
+            var go = new GameObject("SpawnPoint");
             go.transform.SetParent(transform);
             go.transform.localPosition = new Vector3(0, 0, 2f);
-            puntoSalida = go.transform;
+            spawnPoint = go.transform;
         }
     }
 
@@ -55,13 +53,12 @@ public class BaseMilitar : MonoBehaviour, IBase
         estado = EstadoBase.Activa;
     }
 
-    // ======================================================
+    // =========================
     // IBase
-    // ======================================================
+    // =========================
     public void Construir()
     {
-        // En este flujo la Base Militar aparece construida (ya sin sombra).
-        // Dejar no-op para compatibilidad con la interfaz.
+        // En este flujo la base aparece “lista”.
     }
 
     public void RecibirDanio(int cantidad)
@@ -74,13 +71,12 @@ public class BaseMilitar : MonoBehaviour, IBase
             saludActual = 0;
             estado = EstadoBase.Destruida;
             Debug.Log("💥 Base Militar destruida.");
-            // Opcional: cancelar colas, destruir pendientes, etc.
+            // Opcional: cancelar colas, etc.
         }
     }
 
     /// <summary>
-    /// Producción directa de unidades NO Peón (opcional). 
-    /// Mantiene tu contrato previo: la base no produce Peones, sólo especializadas.
+    /// Producción directa de unidades (no Peón). Mantiene contrato previo.
     /// </summary>
     public void ProducirUnidad(UnidadType tipo)
     {
@@ -89,96 +85,38 @@ public class BaseMilitar : MonoBehaviour, IBase
             Debug.LogWarning("⚠️ La Base Militar no está activa.");
             return;
         }
-
         if (tipo == UnidadType.Peon)
         {
-            Debug.LogWarning("ℹ️ La Base Militar no produce Peones. Para Peones usa la Casona.");
+            Debug.LogWarning("ℹ️ La Base Militar no produce Peones. Usa la Casona.");
             return;
         }
-
         if (UnidadFactory.Instance == null)
         {
             Debug.LogError("❌ UnidadFactory.Instance no disponible.");
             return;
         }
 
-        Vector3 pos = puntoSalida != null ? puntoSalida.position : transform.position + Vector3.forward * 1.5f;
+        Vector3 pos = spawnPoint ? spawnPoint.position : transform.position + Vector3.forward * 1.5f;
         var u = UnidadFactory.Instance.CrearUnidad(tipo, pos);
         if (u != null) Debug.Log($"✅ Unidad {tipo} creada desde Base Militar.");
     }
 
     public EstadoBase ObtenerEstado() => estado;
 
-    // Getter para el punto de entrada (lo usa Peon.EnviarAEntrenamiento)
-    public Transform GetPuntoEntrada() => puntoEntrada;
-
-    // ======================================================
-    // ENTRENAMIENTO (cola de Peones -> unidades aleatorias)
-    // ======================================================
-
-    private void OnTriggerEnter(Collider other)
-    {
-        if (!aceptarAutomatico || estado != EstadoBase.Activa) return;
-
-        var peon = other.GetComponent<Peon>();
-        if (peon == null) return;
-
-        // Aceptar sólo peones que vienen a entrenar
-        if (peon.DeseaEntrenar)
-        {
-            TryEncolar(peon);
-            Debug.Log($"[BaseMilitar] {peon.name} entró por trigger y fue encolado. Cola={colaEspera.Count}");
-        }
-    }
+    // =========================
+    // ENTRENAMIENTO (cola simple)
+    // =========================
 
     /// <summary>
-    /// API para UI: ordena a la base recibir/gestionar el entrenamiento de un peón concreto.
-    /// Si aceptarAutomatico es true, el peón caminará al PuntoEntrada y se encolará al cruzar el trigger.
-    /// Si aceptarAutomatico es false, la base lo encolará cuando detecte que llegó cerca del PuntoEntrada.
+    /// API pública que puedes llamar desde UI (por ejemplo: “Entrenar peones seleccionados”).
     /// </summary>
     public void EnviarAPeonEntrenar(Peon peon)
     {
-        Debug.Log($"[BaseMilitar] Peón {peon.name} enviado a entrenar.");
-
         if (peon == null || estado != EstadoBase.Activa) return;
 
-        // Ordena al peón ir al punto de entrada y cortar su bucle de recolección
-        peon.EnviarAEntrenamiento(this);
-
-        if (!aceptarAutomatico)
-        {
-            // Si no usamos el trigger auto, encolar manualmente al llegar
-            StartCoroutine(EsperarYEncolarSiNoAuto(peon));
-        }
-    }
-
-    private IEnumerator EsperarYEncolarSiNoAuto(Peon peon)
-    {
-        // Esperar a que el peón esté lo suficientemente cerca del punto de entrada
-        float timeout = 15f; // seguridad
-        float t = 0f;
-
-        while (peon != null && puntoEntrada != null)
-        {
-            float dist = Vector3.Distance(peon.transform.position, puntoEntrada.position);
-            if (dist <= 0.6f) break;
-
-            t += Time.deltaTime;
-            if (t >= timeout) break;
-            yield return null;
-        }
-
-        if (peon != null) TryEncolar(peon);
-    }
-
-    /// <summary>Encola un Peón para entrenamiento (puedes llamarlo desde UI también).</summary>
-    public void TryEncolar(Peon peon)
-    {
-        if (peon == null || estado != EstadoBase.Activa) return;
-        if (colaEspera.Contains(peon)) return;
-
-        // Que deje de recolectar y pase a modo “entrenar”
-        peon.PrepararseParaEntrenar(this, puntoEntrada != null ? puntoEntrada.position : transform.position);
+        // Aparcar y congelar el peón dentro de la base (lo oculta y deshabilita su agente)
+        Vector3 hold = holdPoint ? holdPoint.position : transform.position;
+        peon.PrepararseParaEntrenarSimple(hold);
 
         colaEspera.Enqueue(peon);
         ProcesarCola();
@@ -202,13 +140,10 @@ public class BaseMilitar : MonoBehaviour, IBase
             yield break;
         }
 
-        // Aparcarlo dentro (apagar agente/renderer mientras “entrena”)
-        peon.TeletransportarYCongelar(puntoInterno != null ? puntoInterno.position : transform.position);
-
         Debug.Log($"[BaseMilitar] Entrenando {peon.name} por {tiempoEntrenamiento} s...");
         yield return new WaitForSeconds(tiempoEntrenamiento);
 
-        // Convertir al azar a una unidad especializada
+        // Elegir tipo aleatorio y construir usando Director + Builder + Factory
         var tipo = ElegirTipoAleatorio();
         if (UnidadFactory.Instance == null)
         {
@@ -216,16 +151,31 @@ public class BaseMilitar : MonoBehaviour, IBase
         }
         else
         {
-            Vector3 spawn = puntoSalida != null ? puntoSalida.position : transform.position + Vector3.forward * 1.5f;
-            UnidadFactory.Instance.CrearUnidad(tipo, spawn);
-            Debug.Log($"[BaseMilitar] {peon.name} convertido en {tipo}.");
+            var builder = new UnidadBuilder();
+            var director = new UnidadDirector(builder, UnidadFactory.Instance);
+
+            Vector3 spawn = spawnPoint ? spawnPoint.position : transform.position + Vector3.forward * 1.5f;
+            var unidad = director.ConstruirUnidad(tipo, spawn, Quaternion.identity);
+
+            if (unidad != null)
+                Debug.Log($"[BaseMilitar] {peon.name} convertido en {tipo} (Builder).");
+            else
+                Debug.LogError("[BaseMilitar] Falló la construcción de la unidad con Builder.");
         }
 
-        // Eliminar el peón original
-        if (peon != null) Destroy(peon.gameObject);
+        if (destruirPeonAlConvertir && peon != null)
+        {
+            Destroy(peon.gameObject);
+        }
+        else if (peon != null)
+        {
+            // Si no lo destruyes, puedes dejarlo desactivado como “consumido”
+            peon.gameObject.SetActive(false);
+            peon.transform.SetParent(this.transform, worldPositionStays: true);
+        }
 
         slotsOcupados--;
-        ProcesarCola(); // seguir con la cola
+        ProcesarCola();
     }
 
     private UnidadType ElegirTipoAleatorio()
@@ -240,11 +190,10 @@ public class BaseMilitar : MonoBehaviour, IBase
         return pool[Random.Range(0, pool.Length)];
     }
 
-    // Gizmos para ayudar a ubicar los puntos
+    // Gizmos para ubicar puntos fácilmente
     private void OnDrawGizmos()
     {
-        Gizmos.color = Color.green; if (puntoEntrada) Gizmos.DrawSphere(puntoEntrada.position, 0.2f);
-        Gizmos.color = Color.yellow; if (puntoInterno) Gizmos.DrawSphere(puntoInterno.position, 0.2f);
-        Gizmos.color = Color.cyan; if (puntoSalida) Gizmos.DrawSphere(puntoSalida.position, 0.2f);
+        Gizmos.color = Color.yellow; if (holdPoint) Gizmos.DrawSphere(holdPoint.position, 0.2f);
+        Gizmos.color = Color.cyan; if (spawnPoint) Gizmos.DrawSphere(spawnPoint.position, 0.2f);
     }
 }

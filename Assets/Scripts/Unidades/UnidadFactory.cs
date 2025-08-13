@@ -1,5 +1,5 @@
-﻿using System;
-using UnityEngine;
+﻿using UnityEngine;
+using UnityEngine.AI;
 
 public class UnidadFactory : MonoBehaviour
 {
@@ -11,19 +11,18 @@ public class UnidadFactory : MonoBehaviour
     public GameObject morenitoPrefab;
     public GameObject chamanPrefab;
 
+    [SerializeField] private float navmeshMaxSampleDistance = 2.0f;
+
     private void Awake()
     {
-        if (Instance != null)
-        {
-            Destroy(gameObject);
-            return;
-        }
+        if (Instance != null) { Destroy(gameObject); return; }
         Instance = this;
     }
 
-    public IUnidad CrearUnidad(UnidadType tipo, Vector3 posicion)
+    // ✅ NUEVO: para Builder/Director
+    public GameObject GetPrefab(UnidadType tipo)
     {
-        GameObject prefab = tipo switch
+        return tipo switch
         {
             UnidadType.Peon => peonPrefab,
             UnidadType.Campesino => campesinoPrefab,
@@ -32,19 +31,28 @@ public class UnidadFactory : MonoBehaviour
             UnidadType.Chaman => chamanPrefab,
             _ => null
         };
+    }
 
+    // Mantén este para otros casos (UI crear peón, etc.)
+    public IUnidad CrearUnidad(UnidadType tipo, Vector3 posicionDeseada)
+    {
+        var prefab = GetPrefab(tipo);
         if (prefab == null)
         {
             Debug.LogError($"❌ Prefab no asignado para la unidad: {tipo}");
             return null;
         }
 
-        GameObject unidadGO = Instantiate(prefab, posicion, Quaternion.identity);
+        // Asegurar NavMesh cercano
+        Vector3 spawn = posicionDeseada;
+        if (NavMesh.SamplePosition(posicionDeseada, out NavMeshHit hit, navmeshMaxSampleDistance, NavMesh.AllAreas))
+            spawn = hit.position;
 
-        if (!unidadGO.TryGetComponent(out IUnidad unidad))
+        GameObject go = Instantiate(prefab, spawn, Quaternion.identity);
+        if (!go.TryGetComponent(out IUnidad unidad))
         {
-            Debug.LogError($"❌ El prefab {prefab.name} no implementa IUnidadBase.");
-            Destroy(unidadGO);
+            Debug.LogError($"❌ El prefab {prefab.name} no implementa IUnidad.");
+            Destroy(go);
             return null;
         }
 
