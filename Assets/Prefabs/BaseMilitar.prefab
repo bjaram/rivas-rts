@@ -1,6 +1,6 @@
 %YAML 1.1
 %TAG !u! tag:unity3d.com,2011:
---- !u!1 &231736204994726752
+--- !u!1 &1103757774383837544
 GameObject:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -8,24 +8,24 @@ GameObject:
   m_PrefabAsset: {fileID: 0}
   serializedVersion: 6
   m_Component:
-  - component: {fileID: 2754618110646991020}
+  - component: {fileID: 2957695256533036917}
   m_Layer: 0
-  m_Name: PuntoSalida
+  m_Name: SpawnPoint
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
---- !u!4 &2754618110646991020
+--- !u!4 &2957695256533036917
 Transform:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 231736204994726752}
+  m_GameObject: {fileID: 1103757774383837544}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: -5, z: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 2}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -43,7 +43,7 @@ GameObject:
   - component: {fileID: 5500715274904456057}
   - component: {fileID: 8208278253654969129}
   - component: {fileID: 7618300414729509008}
-  - component: {fileID: -7370559406023549708}
+  - component: {fileID: 3518376929579878997}
   m_Layer: 0
   m_Name: BaseMilitar
   m_TagString: Untagged
@@ -64,9 +64,8 @@ Transform:
   m_LocalScale: {x: 15, y: 8, z: 12}
   m_ConstrainProportionsScale: 0
   m_Children:
-  - {fileID: 4506665795598264642}
-  - {fileID: 382084806401186260}
-  - {fileID: 2754618110646991020}
+  - {fileID: 3983753733283881426}
+  - {fileID: 2957695256533036917}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!33 &5500715274904456057
@@ -143,7 +142,7 @@ BoxCollider:
   serializedVersion: 3
   m_Size: {x: 1, y: 1, z: 1}
   m_Center: {x: 0, y: 0, z: 0}
---- !u!114 &-7370559406023549708
+--- !u!114 &3518376929579878997
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -160,11 +159,10 @@ MonoBehaviour:
   estado: 0
   capacidadSlots: 2
   tiempoEntrenamiento: 10
-  aceptarAutomatico: 1
-  puntoEntrada: {fileID: 4506665795598264642}
-  puntoInterno: {fileID: 382084806401186260}
-  puntoSalida: {fileID: 2754618110646991020}
---- !u!1 &6096575173843175152
+  holdPoint: {fileID: 3983753733283881426}
+  spawnPoint: {fileID: 2957695256533036917}
+  destruirPeonAlConvertir: 1
+--- !u!1 &6461090565302501403
 GameObject:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -172,21 +170,21 @@ GameObject:
   m_PrefabAsset: {fileID: 0}
   serializedVersion: 6
   m_Component:
-  - component: {fileID: 382084806401186260}
+  - component: {fileID: 3983753733283881426}
   m_Layer: 0
-  m_Name: PuntoInterno
+  m_Name: HoldPoint
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
---- !u!4 &382084806401186260
+--- !u!4 &3983753733283881426
 Transform:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 6096575173843175152}
+  m_GameObject: {fileID: 6461090565302501403}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0.5}
@@ -195,58 +193,3 @@ Transform:
   m_Children: []
   m_Father: {fileID: 1125802376883456264}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!1 &7346481423874613033
-GameObject:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  serializedVersion: 6
-  m_Component:
-  - component: {fileID: 4506665795598264642}
-  - component: {fileID: 7000769566022854512}
-  m_Layer: 0
-  m_Name: PuntoEntrada
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 1
---- !u!4 &4506665795598264642
-Transform:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 7346481423874613033}
-  serializedVersion: 2
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 1.5}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_ConstrainProportionsScale: 0
-  m_Children: []
-  m_Father: {fileID: 1125802376883456264}
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!136 &7000769566022854512
-CapsuleCollider:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 7346481423874613033}
-  m_Material: {fileID: 0}
-  m_IncludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_ExcludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_LayerOverridePriority: 0
-  m_IsTrigger: 1
-  m_ProvidesContacts: 0
-  m_Enabled: 1
-  serializedVersion: 2
-  m_Radius: 0.5
-  m_Height: 1
-  m_Direction: 1
-  m_Center: {x: 0, y: 0, z: 0}

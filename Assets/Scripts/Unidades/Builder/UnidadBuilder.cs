@@ -1,4 +1,5 @@
 using UnityEngine;
+using UnityEngine.AI;
 
 public class UnidadBuilder : IUnidadBuilder
 {
@@ -8,6 +9,9 @@ public class UnidadBuilder : IUnidadBuilder
     private int _vida = 100;
     private float _vel = 3f;
     private Material _mat;
+
+    // Radio de búsqueda de NavMesh para el spawn
+    private const float NAVMESH_PICK_RADIUS = 5f;
 
     public void Reset()
     {
@@ -46,9 +50,30 @@ public class UnidadBuilder : IUnidadBuilder
             return null;
         }
 
-        var go = Object.Instantiate(_prefab, _spawnPos, _spawnRot);
+        // 1) Asegurar spawn sobre NavMesh
+        Vector3 finalSpawn = _spawnPos;
+        if (NavMesh.SamplePosition(_spawnPos, out var hit, NAVMESH_PICK_RADIUS, NavMesh.AllAreas))
+            finalSpawn = hit.position;
+        else
+            Debug.LogWarning($"UnidadBuilder: no hay NavMesh cerca de {_spawnPos}. Se intenta instanciar igual.");
 
-        // Debe implementar IUnidad (y opcionalmente IMovible / IDaniable)
+        var go = Object.Instantiate(_prefab, finalSpawn, _spawnRot);
+
+        // 2) Warp del NavMeshAgent si quedó fuera
+        if (go.TryGetComponent<NavMeshAgent>(out var agent))
+        {
+            if (!agent.isOnNavMesh)
+            {
+                if (NavMesh.SamplePosition(go.transform.position, out hit, NAVMESH_PICK_RADIUS, NavMesh.AllAreas))
+                {
+                    agent.enabled = false;
+                    go.transform.position = hit.position;
+                    agent.enabled = true;
+                    if (!agent.isOnNavMesh) agent.Warp(hit.position);
+                }
+            }
+        }
+
         if (!go.TryGetComponent<IUnidad>(out var unidad))
         {
             Debug.LogError($"UnidadBuilder: el prefab {_prefab.name} no implementa IUnidad.");
@@ -56,20 +81,9 @@ public class UnidadBuilder : IUnidadBuilder
             return null;
         }
 
-        // Stats básicos si los expone el componente concreto
-        // Intentamos setearlos si existen campos públicos comunes (ej. Peon/Campesino implementan IDaniable/IMovible)
-        if (go.TryGetComponent<IDaniable>(out var daniable))
-        {
-            // Si tu IDaniable no expone setter de vida, puedes crear un método público “ConfigurarVida(int)”
-            // o exponer un método Init en las clases concretas. Aquí solo un ejemplo simple:
-            // (si no tienes API, omite esta parte)
-            // daniable.SetVidaBase(_vida); // <- si lo tienes
-        }
-
-        if (go.TryGetComponent<IMovible>(out var mov))
-        {
-            // mov.SetVelocidad(_vel); // <- si tienes un setter en tus unidades
-        }
+        // (Opcional) aplicar stats si tus componentes exponen setters
+        // if (go.TryGetComponent<IDaniable>(out var daniable)) daniable.SetVidaBase(_vida);
+        // if (go.TryGetComponent<IMovible>(out var mov)) mov.SetVelocidad(_vel);
 
         if (_mat != null)
         {
