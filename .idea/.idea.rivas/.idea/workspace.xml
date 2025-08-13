@@ -1,7 +1,178 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
+  <component name="AutoImportSettings">
+    <option name="autoReloadType" value="SELECTIVE" />
+  </component>
   <component name="ChangeListManager">
-    <list default="true" id="b9824fd8-a5f7-4b07-b3ed-1dbe727365a1" name="Changes" comment="" />
+    <list default="true" id="b9824fd8-a5f7-4b07-b3ed-1dbe727365a1" name="Changes" comment="">
+      <change afterPath="$PROJECT_DIR$/.idea/.idea.rivas/.idea/.gitignore" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/.idea/.idea.rivas/.idea/encodings.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/.idea/.idea.rivas/.idea/vcs.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Assets/Animation.meta" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Assets/Animation/Cursor_walk.anim" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Assets/Animation/Cursor_walk.anim.meta" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Assets/Animation/Cursor_walk.controller" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Assets/Animation/Cursor_walk.controller.meta" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Assets/Animation/GroundMarker.anim" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Assets/Animation/GroundMarker.anim.meta" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Assets/Animation/GroundMarker.controller" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Assets/Animation/GroundMarker.controller.meta" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Assets/Animation/SelectableCursor.controller" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Assets/Animation/SelectableCursor.controller.meta" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Assets/Animation/UnitController.controller" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Assets/Animation/UnitController.controller.meta" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Assets/Animation/cursor_select.anim" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Assets/Animation/cursor_select.anim.meta" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Assets/Building.meta" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Assets/Building/BuildingSystem.prefab" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Assets/Building/Database.asset" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Assets/Building/Database.asset.meta" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Assets/Building/House.prefab" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Assets/Building/House.prefab.meta" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Assets/Building/Scripts.meta" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Assets/Building/Scripts/BuildCommand.cs" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Assets/Building/Scripts/BuildCommand.cs.meta" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Assets/Building/Scripts/BuySystem.cs" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Assets/Building/Scripts/BuySystem.cs.meta" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Assets/Building/Scripts/Constructable.cs" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Assets/Building/Scripts/Constructable.cs.meta" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Assets/Building/Scripts/GridData.cs" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Assets/Building/Scripts/GridData.cs.meta" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Assets/Building/Scripts/IBuildingState.cs" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Assets/Building/Scripts/IBuildingState.cs.meta" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Assets/Building/Scripts/InputManager.cs" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Assets/Building/Scripts/InputManager.cs.meta" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Assets/Building/Scripts/ObjectPlacer.cs" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Assets/Building/Scripts/ObjectPlacer.cs.meta" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Assets/Building/Scripts/ObjectsDatabseSO.cs" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Assets/Building/Scripts/ObjectsDatabseSO.cs.meta" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Assets/Building/Scripts/PlacementState.cs" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Assets/Building/Scripts/PlacementState.cs.meta" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Assets/Building/Scripts/PlacementSystem.cs" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Assets/Building/Scripts/PlacementSystem.cs.meta" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Assets/Building/Scripts/PreviewSystem.cs" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Assets/Building/Scripts/PreviewSystem.cs.meta" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Assets/Building/Scripts/RemovingState.cs" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Assets/Building/Scripts/RemovingState.cs.meta" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Assets/Building/Scripts/UIManager.cs" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Assets/Building/Scripts/UIManager.cs.meta" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Assets/Building/TransparentGhost.mat" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Assets/Building/TransparentGhost.mat.meta" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Assets/Cursors.meta" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Assets/Cursors/AttackableCursor.prefab" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Assets/Cursors/AttackableCursor.prefab.meta" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Assets/Cursors/CursorManager.cs" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Assets/Cursors/CursorManager.cs.meta" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Assets/Cursors/CursorManager.prefab" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Assets/Cursors/CursorManager.prefab.meta" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Assets/Cursors/DirectionIndicator.cs" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Assets/Cursors/DirectionIndicator.cs.meta" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Assets/Cursors/GroundMarker.mat" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Assets/Cursors/GroundMarker.mat.meta" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Assets/Cursors/GroundMarker.prefab" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Assets/Cursors/GroundMarker.prefab.meta" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Assets/Cursors/SelectableCursor.prefab" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Assets/Cursors/SelectableCursor.prefab.meta" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Assets/Cursors/WalkableCursor.prefab" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Assets/Cursors/WalkableCursor.prefab.meta" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Assets/Cursors/selectable.fbx" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Assets/Cursors/selectable.fbx.meta" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Assets/Cursors/torus.fbx" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Assets/Cursors/torus.fbx.meta" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Assets/Materials.meta" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Assets/Materials/UI.meta" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Assets/Materials/UI/GreenEmissionHP.mat" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Assets/Materials/UI/GreenEmissionHP.mat.meta" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Assets/Materials/UI/RedEmissionHP.mat" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Assets/Materials/UI/RedEmissionHP.mat.meta" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Assets/Materials/UI/YellowEmissionHP.mat" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Assets/Materials/UI/YellowEmissionHP.mat.meta" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Assets/Misc/arrow.fbx" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Assets/Misc/arrow.fbx.meta" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Assets/Prefabs/Main Camera.prefab" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Assets/Prefabs/Main Camera.prefab.meta" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Assets/Prefabs/Materials/Debug.meta" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Assets/Prefabs/Materials/Debug/Attack.mat" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Assets/Prefabs/Materials/Debug/Attack.mat.meta" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Assets/Prefabs/Materials/Debug/Follow.mat" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Assets/Prefabs/Materials/Debug/Follow.mat.meta" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Assets/Prefabs/Materials/Debug/Idle.mat" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Assets/Prefabs/Materials/Debug/Idle.mat.meta" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Assets/Prefabs/Resources/Unit.prefab" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Assets/Prefabs/Resources/UnitFilibustero.prefab" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Assets/Prefabs/Resources/UnitFilibustero.prefab.meta" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Assets/Prefabs/Resources/UnitSelectionBox.prefab" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Assets/Prefabs/Resources/UnitSelectionBox.prefab.meta" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Assets/Prefabs/Resources/UnitSelectionManager.prefab" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Assets/Prefabs/Resources/UnitSelectionManager.prefab.meta" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Assets/Prefabs/UnitUI.prefab" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Assets/Prefabs/UnitUI.prefab.meta" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Assets/Scenes/SceneWithUnits.meta" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Assets/Scenes/SceneWithUnits.unity" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Assets/Scenes/SceneWithUnits.unity.meta" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Assets/Scenes/SceneWithUnits/NavMesh-Ground.asset" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Assets/Scripts/Cam.meta" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Assets/Scripts/Cam/FaceCamera.cs" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Assets/Scripts/Cam/FaceCamera.cs.meta" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Assets/Scripts/Cam/RTSCameraController.cs" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Assets/Scripts/Cam/RTSCameraController.cs.meta" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Assets/Scripts/CambiarSizeTerreno.cs" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Assets/Scripts/CambiarSizeTerreno.cs.meta" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Assets/Scripts/Filibustero.cs" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Assets/Scripts/Filibustero.cs.meta" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Assets/Scripts/HealthTracker.cs" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Assets/Scripts/HealthTracker.cs.meta" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Assets/Scripts/SimplePatrol.cs" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Assets/Scripts/SimplePatrol.cs.meta" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Assets/Scripts/Unidades/AttackController.cs" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Assets/Scripts/Unidades/AttackController.cs.meta" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Assets/Scripts/Unidades/Unit.cs" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Assets/Scripts/Unidades/UnitAttackState.cs" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Assets/Scripts/Unidades/UnitAttackState.cs.meta" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Assets/Scripts/Unidades/UnitFollowState.cs" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Assets/Scripts/Unidades/UnitFollowState.cs.meta" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Assets/Scripts/Unidades/UnitIdleState.cs" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Assets/Scripts/Unidades/UnitIdleState.cs.meta" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Assets/Scripts/Unidades/UnitSelectionBox.cs.meta" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Assets/Terrain.meta" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Assets/UI.meta" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Assets/UI/Scroll_DOWN.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Assets/UI/Scroll_DOWN.png.meta" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Assets/UI/Scroll_LEFT.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Assets/UI/Scroll_LEFT.png.meta" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Assets/UI/Scroll_RIGHT.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Assets/UI/Scroll_RIGHT.png.meta" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Assets/UI/Scroll_UP.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Assets/UI/Scroll_UP.png.meta" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Assets/UI/cursor.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Assets/UI/cursor.png.meta" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/New Terrain.asset" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Terrain/New Terrain.asset" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/New Terrain.asset.meta" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Terrain/New Terrain.asset.meta" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/Prefabs/CuboProgreso.prefab" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/Prefabs/CuboProgreso.prefab.meta" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Building/BuildingSystem.prefab.meta" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/Resources.meta" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Prefabs/Resources.meta" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/Resources/GroundMarker.mat" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Prefabs/Resources/GroundMarker.mat" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/Resources/GroundMarker.mat.meta" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Prefabs/Resources/GroundMarker.mat.meta" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/Resources/GroundMarker.prefab" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Prefabs/Resources/GroundMarker.prefab" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/Resources/GroundMarker.prefab.meta" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Prefabs/Resources/GroundMarker.prefab.meta" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/Resources/Unit.prefab" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/Resources/Unit.prefab.meta" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Prefabs/Resources/Unit.prefab.meta" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/Resources/UnitSelectionindicator.mat" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Prefabs/Resources/UnitSelectionindicator.mat" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/Resources/UnitSelectionindicator.mat.meta" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Prefabs/Resources/UnitSelectionindicator.mat.meta" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/Scenes/SampleScene/NavMesh-Ground.asset" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/Scenes/SampleScene/NavMesh-Ground.asset.meta" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Scenes/SceneWithUnits/NavMesh-Ground.asset.meta" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/Scripts/Unit.cs" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/Scripts/Unit.cs.meta" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Scripts/Unidades/Unit.cs.meta" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/Scripts/UnitMovement.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Scripts/Unidades/UnitMovement.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/Scripts/UnitMovement.cs.meta" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Scripts/Unidades/UnitMovement.cs.meta" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/Scripts/UnitSelectionBox.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Scripts/Unidades/UnitSelectionBox.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/Scripts/UnitSelectionBox.cs.meta" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/Scripts/UnitSelectionManager.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Scripts/Unidades/UnitSelectionManager.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/Scripts/UnitSelectionManager.cs.meta" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Scripts/Unidades/UnitSelectionManager.cs.meta" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/ProjectSettings/DynamicsManager.asset" beforeDir="false" afterPath="$PROJECT_DIR$/ProjectSettings/DynamicsManager.asset" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/ProjectSettings/ProjectSettings.asset" beforeDir="false" afterPath="$PROJECT_DIR$/ProjectSettings/ProjectSettings.asset" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/ProjectSettings/TagManager.asset" beforeDir="false" afterPath="$PROJECT_DIR$/ProjectSettings/TagManager.asset" afterDir="false" />
+    </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -10,22 +181,30 @@
   <component name="Git.Settings">
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
   </component>
-  <component name="GitHubPullRequestSearchHistory"><![CDATA[{
-  "lastFilter": {
-    "state": "OPEN",
-    "assignee": "bjaram"
+  <component name="GitHubPullRequestSearchHistory">{
+  &quot;lastFilter&quot;: {
+    &quot;state&quot;: &quot;OPEN&quot;,
+    &quot;assignee&quot;: &quot;bjaram&quot;
   }
-}]]></component>
-  <component name="GithubPullRequestsUISettings"><![CDATA[{
-  "selectedUrlAndAccountId": {
-    "url": "https://github.com/bjaram/rivas-rts.git",
-    "accountId": "42eb6124-4da8-4842-878a-14a537291f94"
+}</component>
+  <component name="GithubPullRequestsUISettings">{
+  &quot;selectedUrlAndAccountId&quot;: {
+    &quot;url&quot;: &quot;https://github.com/bjaram/rivas-rts.git&quot;,
+    &quot;accountId&quot;: &quot;42eb6124-4da8-4842-878a-14a537291f94&quot;
   }
-}]]></component>
+}</component>
+  <component name="HighlightingSettingsPerFile">
+    <setting file="mock://C:/Users/bryan/Patrones/rivas/Assets/Prefabs/CuboProgreso.prefab" root0="SKIP_HIGHLIGHTING" />
+    <setting file="mock://C:/Users/bryan/Patrones/rivas/Assets/Prefabs/CuboProgreso.prefab" root0="SKIP_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/Library/PackageCache/com.unity.ai.navigation@eb5635ad590d/Runtime/NavMeshSurface.cs" root0="SKIP_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/Library/PackageCache/com.unity.render-pipelines.universal@35104b1b69f5/Runtime/UniversalRenderPipeline.cs" root0="SKIP_HIGHLIGHTING" />
+    <setting file="mock://C:/Users/bryan/Patrones/rivas/ProjectSettings/TagManager.asset" root0="SKIP_HIGHLIGHTING" />
+    <setting file="mock://C:/Users/bryan/Patrones/rivas/ProjectSettings/TagManager.asset" root0="SKIP_HIGHLIGHTING" />
+  </component>
   <component name="MetaFilesCheckinStateConfiguration" checkMetaFiles="true" />
-  <component name="ProjectColorInfo"><![CDATA[{
-  "associatedIndex": 5
-}]]></component>
+  <component name="ProjectColorInfo">{
+  &quot;associatedIndex&quot;: 5
+}</component>
   <component name="ProjectId" id="31AJwKrxigjicsFP6GPLgFevatC" />
   <component name="ProjectViewState">
     <option name="hideEmptyMiddlePackages" value="true" />
@@ -36,6 +215,7 @@
     "ModuleVcsDetector.initialDetectionPerformed": "true",
     "RunOnceActivity.ShowReadmeOnStart": "true",
     "RunOnceActivity.git.unshallow": "true",
+    "git-widget-placeholder": "Merging feature/bases",
     "nodejs_package_manager_path": "npm",
     "vue.rearranger.settings.migration": "true"
   }

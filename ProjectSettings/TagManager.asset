@@ -6,8 +6,7 @@ TagManager:
   tags:
   - PlantaPalmera
   - CasonaFinal
-  - PlantaCafe
-  - CuboProgreso
+  - Enemigo
   layers:
   - Default
   - TransparentFX
@@ -16,7 +15,7 @@ TagManager:
   - Water
   - UI
   - Clickable
-  - 
+  - Attackable
   - 
   - 
   - 
