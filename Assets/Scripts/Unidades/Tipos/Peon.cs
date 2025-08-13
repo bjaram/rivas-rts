@@ -3,132 +3,159 @@ using UnityEngine.AI;
 
 public class Peon : MonoBehaviour, IUnidad, IMovible, IDaniable, IRecolector
 {
-    private int vida = 60;
-    private float velocidad = 15f;
-    private int vidaMaxima = 60;
-    private int cargaActual = 0;
-    private int cargaMaxima = 50;
-    private bool llevandoRecursos = false;
-    private bool casonaConstruida = false;
+    [Header("Stats")]
+    public int vidaMaxima = 60;
+    public float velocidad = 3.5f;
+    public int capacidadCarga = 50;
+    public float distanciaLlegada = 0.6f;
 
+    private int vida;
+    private int cargaActual;
     private NavMeshAgent agente;
-    private GameObject objetivoRecoleccion;
-    private SitioConstruccionBase objetivoConstruccion;
+    private GameObject objetivoPlanta;
+
+    // ===== Entrenamiento =====
+    /// <summary>Indica si este peón ha sido ordenado a entrenar.</summary>
+    public bool DeseaEntrenar { get; private set; } = false;
+
+    private Renderer cachedRenderer;
+
+    private void Awake()
+    {
+        vida = vidaMaxima;
+        agente = GetComponent<NavMeshAgent>();
+        if (agente != null) agente.speed = velocidad;
+
+        cachedRenderer = GetComponentInChildren<Renderer>();
+    }
 
     private void Start()
     {
-        agente = GetComponent<NavMeshAgent>();
-        agente.speed = velocidad;
-
-        BuscarNuevaPlanta();
+        BuscarRecurso(); // comienza a recolectar palmeras
     }
 
     private void Update()
     {
-        if (!agente.pathPending && agente.remainingDistance < 0.5f)
+        // Si fue ordenado a entrenar, este peón ya no sigue el bucle de recolección aquí.
+        if (DeseaEntrenar || agente == null) return;
+
+        if (!agente.pathPending && agente.remainingDistance <= distanciaLlegada)
         {
-            if (!llevandoRecursos)
-            {
-                Recolectar();
-            }
-            else
-            {
-                EntregarRecursos();
-            }
+            // Llegó a la planta -> recolecta y busca otra
+            Recolectar();
+            BuscarRecurso();
         }
     }
 
-    private void BuscarNuevaPlanta()
+    // =========================
+    // IRecolector
+    // =========================
+    public void BuscarRecurso()
     {
-        GameObject[] plantas = GameObject.FindGameObjectsWithTag("PlantaPalmera");
-        if (plantas.Length == 0)
+        if (DeseaEntrenar) return; // si va a entrenar, no buscar más recursos
+
+        const string tag = "PlantaPalmera";
+        GameObject[] plantas = GameObject.FindGameObjectsWithTag(tag);
+
+        if (plantas == null || plantas.Length == 0)
         {
-            Debug.LogWarning("❌ No hay plantas disponibles para recolectar.");
+            objetivoPlanta = null;
+            // Reintentar en 1s si no hay plantas
+            Invoke(nameof(BuscarRecurso), 1f);
             return;
         }
 
-        objetivoRecoleccion = plantas[Random.Range(0, plantas.Length)];
-        agente.SetDestination(objetivoRecoleccion.transform.position);
+        objetivoPlanta = plantas[Random.Range(0, plantas.Length)];
+        if (agente != null) agente.SetDestination(objetivoPlanta.transform.position);
     }
 
-    private void BuscarSitioConstruccion()
+    public void Recolectar()
     {
-        SitioConstruccionBase[] sitios = FindObjectsByType<SitioConstruccionBase>(FindObjectsSortMode.None);
-        foreach (var sitio in sitios)
+        if (DeseaEntrenar) return;
+
+        cargaActual = capacidadCarga;
+        ResourceManager.Instance.Incrementar(RecursoType.Palmeras, cargaActual);
+        cargaActual = 0;
+    }
+
+    // =========================
+    // Flujo de ENTRENAMIENTO (simple en Casona)
+    // =========================
+
+    /// <summary>
+    /// Llamado por SimpleTrainer.Encolar(peon).
+    /// Detiene recolección, apaga el agente y lo “aparca” en el hold point dentro de la Casona.
+    /// </summary>
+    public void PrepararseParaEntrenarSimple(Vector3 puntoHold)
+    {
+        DeseaEntrenar = true;
+
+        // Corta el ciclo de búsqueda
+        objetivoPlanta = null;
+        CancelInvoke(nameof(BuscarRecurso));
+
+        // Congela navegación
+        if (agente != null)
         {
-            if (!sitio.EstaCompleto())
+            if (agente.enabled)
             {
-                objetivoConstruccion = sitio;
-                agente.SetDestination(sitio.transform.position);
-                return;
+                agente.isStopped = true;
+                agente.ResetPath();
             }
+            agente.enabled = false;
         }
 
-        Debug.LogWarning("⚠️ No hay sitios de construcción disponibles.");
-    }
+        // Mueve al “cuarto” de entrenamiento y, opcional, oculta visualmente
+        transform.position = puntoHold;
 
-    private void Recolectar()
-    {
-        cargaActual = cargaMaxima;
-        llevandoRecursos = true;
-        BuscarSitioConstruccion();
-    }
-
-    private void EntregarRecursos()
-    {
-        if (objetivoConstruccion != null)
+        if (cachedRenderer != null)
         {
-            objetivoConstruccion.RecibirRecursos(this, cargaActual);
-            cargaActual = 0;
-            llevandoRecursos = false;
-
-            if (!objetivoConstruccion.EstaCompleto())
-            {
-                BuscarNuevaPlanta();
-            }
-            else
-            {
-                if (!casonaConstruida)
-                {
-                    casonaConstruida = true;
-                    BuscarSitioConstruccion(); // Ahora irá a la BaseMilitar
-                }
-                else
-                {
-                    BuscarNuevaPlanta(); // Ya construyó Casona y BaseMilitar
-                }
-            }
+            var rends = GetComponentsInChildren<Renderer>();
+            foreach (var r in rends) r.enabled = false;
         }
     }
 
+    /// <summary>
+    /// Si no deseas destruir al peón tras el entrenamiento, puedes devolverlo con esto.
+    /// (En este flujo lo destruimos, así que es opcional.)
+    /// </summary>
+    public void LiberarDespuesEntrenamiento()
+    {
+        if (agente != null)
+        {
+            agente.enabled = true;
+            agente.isStopped = false;
+        }
+
+        var rends = GetComponentsInChildren<Renderer>();
+        foreach (var r in rends) r.enabled = true;
+
+        DeseaEntrenar = false;
+        BuscarRecurso();
+    }
+
+    // =========================
+    // IUnidad / IMovible / IDaniable
+    // =========================
     public void Mover(Vector3 destino)
     {
-        agente.SetDestination(destino);
+        if (agente != null && agente.enabled)
+        {
+            agente.isStopped = false;
+            agente.SetDestination(destino);
+        }
     }
 
     public void RecibirDanio(int cantidad)
     {
         vida -= cantidad;
-        if (vida <= 0)
-        {
-            Destroy(gameObject);
-        }
+        if (vida <= 0) Destroy(gameObject);
     }
 
-    public int ObtenerVida()
-    {
-        return vida;
-    }
+    public int ObtenerVida() => vida;
 
     public void RecibirCuracion(int cantidad)
     {
-        vida += cantidad;
-        if (vida > vidaMaxima)
-            vida = vidaMaxima;
-    }
-
-    public void RecolectarRecursos()
-    {
-        throw new System.NotImplementedException();
+        vida = Mathf.Min(vida + cantidad, vidaMaxima);
     }
 }

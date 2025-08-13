@@ -1,79 +1,65 @@
-using UnityEngine;
-using System.Collections;
+﻿using UnityEngine;
 
 public class Casona : MonoBehaviour, IBase
 {
+    [Header("Vida")]
     [SerializeField] private int saludMaxima = 1000;
     [SerializeField] private int saludActual;
-    [SerializeField] private int costePalmeras = 200;
-    [SerializeField] private float tiempoConstruccion = 5f;
 
-    private EstadoBase estado = EstadoBase.EnConstruccion;
-    private IEstadoBase estadoActual;
+    [Header("Spawn")]
+    [SerializeField] private Transform puntoSpawn;
 
-    private void Start()
+    private EstadoBase estado = EstadoBase.Activa; // ya activa al instanciar
+
+    private void Awake()
     {
         saludActual = saludMaxima;
-        Construir();
     }
 
+    // IBase
     public void Construir()
     {
-        if (!ResourceManager.Instance.Gastar(RecursoType.Palmeras, costePalmeras))
-        {
-            Debug.LogWarning("No hay suficientes palmeras para construir la Casona.");
-            return;
-        }
-
-        CambiarEstado(new EstadoEnConstruccion());
-        StartCoroutine(ConstruccionProgresiva());
-    }
-
-    private IEnumerator ConstruccionProgresiva()
-    {
-        float tiempo = 0f;
-        while (tiempo < tiempoConstruccion)
-        {
-            tiempo += Time.deltaTime;
-            yield return null;
-        }
-
-        CambiarEstado(new EstadoActiva());
-        estado = EstadoBase.Activa;
-        Debug.Log("Casona construida y activa.");
+        // No-op en esta versión: la casona ya nace construida
     }
 
     public void RecibirDanio(int cantidad)
     {
-        estadoActual?.RecibirDanio(this, cantidad);
-    }
-
-    public void ModificarSalud(int delta)
-    {
-        saludActual += delta;
-        saludActual = Mathf.Clamp(saludActual, 0, saludMaxima);
-
-        if (saludActual <= 0 && !(estadoActual is EstadoDestruida))
+        saludActual -= cantidad;
+        if (saludActual <= 0)
         {
-            CambiarEstado(new EstadoDestruida());
+            saludActual = 0;
             estado = EstadoBase.Destruida;
-            Debug.Log("�La Casona ha sido destruida!");
+            Debug.Log("💥 Casona destruida.");
         }
     }
 
     public void ProducirUnidad(UnidadType tipo)
     {
-        estadoActual?.ProducirUnidad(this, tipo);
+        if (estado != EstadoBase.Activa)
+        {
+            Debug.LogWarning("⚠️ Casona no activa, no puede producir.");
+            return;
+        }
+
+        if (tipo != UnidadType.Peon)
+        {
+            Debug.LogWarning("ℹ️ En esta versión la casona solo produce Peones.");
+            return;
+        }
+
+        if (UnidadFactory.Instance == null)
+        {
+            Debug.LogError("❌ UnidadFactory no disponible.");
+            return;
+        }
+
+        Vector3 spawnPos = puntoSpawn != null ? puntoSpawn.position : transform.position + Vector3.right * 1.5f;
+        var unidad = UnidadFactory.Instance.CrearUnidad(UnidadType.Peon, spawnPos);
+        if (unidad != null) Debug.Log("✅ Peón creado desde Casona.");
     }
 
-    public EstadoBase ObtenerEstado()
-    {
-        return estado;
-    }
+    public EstadoBase ObtenerEstado() => estado;
 
-    public void CambiarEstado(IEstadoBase nuevoEstado)
-    {
-        estadoActual = nuevoEstado;
-        estadoActual.Ejecutar(this);
-    }
+    // Utilidad para UI
+    public Transform GetSpawnPoint() => puntoSpawn;
 }
